@@ -47,6 +47,10 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+	// api docs
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.0")
+
 }
 
 tasks.withType<Test> {
