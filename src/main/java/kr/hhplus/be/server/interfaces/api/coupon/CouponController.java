@@ -1,6 +1,5 @@
-package kr.hhplus.be.server.interfaces.api;
+package kr.hhplus.be.server.interfaces.api.coupon;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/api/v1/coupon")

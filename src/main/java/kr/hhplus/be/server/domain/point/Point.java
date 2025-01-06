@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.product;
+package kr.hhplus.be.server.domain.point;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import kr.hhplus.be.server.domain.common.Base;
 
 @Entity
-public class Product extends Base {
+public class Point extends Base {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

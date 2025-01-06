@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.api;
+package kr.hhplus.be.server.interfaces.api.product;
 
 import org.springframework.web.bind.annotation.RestController;
 
