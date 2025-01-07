@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.infrastructure.jpa.coupon;
 
-import kr.hhplus.be.server.domain.coupon.CouponRepository;
-import kr.hhplus.be.server.domain.user.UserRepository;
+import kr.hhplus.be.server.domain.coupon.repository.CouponRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository

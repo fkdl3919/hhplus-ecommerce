@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.orderitem;
+package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
