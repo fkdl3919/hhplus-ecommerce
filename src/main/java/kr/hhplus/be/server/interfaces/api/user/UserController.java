@@ -4,19 +4,20 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import kr.hhplus.be.server.interfaces.api.user.response.UserResponse;
+import kr.hhplus.be.server.application.user.UserFacade;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController("/api/v1/user")
+@RequiredArgsConstructor
 public class UserController {
 
-
+    private final UserFacade userFacade;
 
     @Operation(summary = "잔액 조회", description = "사용자의 잔액을 조회합니다.")
     @ApiResponses(value = {
@@ -26,12 +27,12 @@ public class UserController {
         @ApiResponse(responseCode = "500", description = "서버오류")
     })
     @GetMapping("point/{id}")
-    public ResponseEntity<UserResponse> point(
+    public ResponseEntity<Long> point(
 
         @Parameter(description = "유저 id", example = "11")
         @PathVariable long id
     ) {
-        return null;
+        return ResponseEntity.ok(userFacade.getUserPoint(id));
     }
 
     @Operation(summary = "잔액 충전", description = "사용자 잔액을 충전합니다.")
@@ -42,16 +43,17 @@ public class UserController {
         @ApiResponse(responseCode = "500", description = "서버오류")
     })
     @PostMapping("point/{id}")
-    public ResponseEntity<UserResponse> charge(
+    public ResponseEntity charge(
 
         @Parameter(description = "유저 id", example = "11")
         @PathVariable long id,
 
-        @Parameter(description = "충전 금액", example = "11")
+        @Parameter(description = "충전 금액", example = "1000")
         @RequestBody long amount
 
     ) {
-        return null;
+        userFacade.chargePoint(id, amount);
+        return ResponseEntity.ok().build();
     }
 
 
