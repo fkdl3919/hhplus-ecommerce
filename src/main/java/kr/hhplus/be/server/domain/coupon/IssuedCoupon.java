@@ -45,4 +45,7 @@ public class IssuedCoupon extends Base {
 
     private LocalDate expireDate;
 
+    public void validForOrder() {
+        if(this.expireDate == null || this.expireDate.isBefore(LocalDate.now())) throw new IllegalArgumentException("보유하신 쿠폰의 유효기간이 만료되었습니다.");
+    }
 }

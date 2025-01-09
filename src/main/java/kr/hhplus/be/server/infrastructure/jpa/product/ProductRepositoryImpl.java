@@ -4,6 +4,7 @@ import static kr.hhplus.be.server.domain.product.QProduct.*;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.QProduct;
 import kr.hhplus.be.server.domain.product.repository.ProductRepository;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Repository;
 public class ProductRepositoryImpl implements ProductRepository {
 
     private final JPAQueryFactory queryFactory;
+    private final ProductJpaRepository productJpaRepository;
 
     @Override
     public Page<Product> selectProductList(Pageable pageable) {
@@ -36,5 +38,10 @@ public class ProductRepositoryImpl implements ProductRepository {
             .fetchCount();
 
         return new PageImpl<>(products, pageable, total);
+    }
+
+    @Override
+    public Optional<Product> findProductWithLock(Long id) {
+        return Optional.of(productJpaRepository.findProductWithLock(id));
     }
 }
