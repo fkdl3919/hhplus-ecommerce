@@ -1,8 +1,9 @@
 package kr.hhplus.be.server.application.product;
 
-import kr.hhplus.be.server.application.product.dto.ProductPage;
+import kr.hhplus.be.server.application.product.dto.ProductInfo;
 import kr.hhplus.be.server.domain.product.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ public class ProductFacade {
 
     private final ProductService productService;
 
-    public ProductPage selectProductList(Pageable pageable) {
-        return ProductPage.from(productService.selectProductList(pageable));
+    public PageImpl<ProductInfo> selectProductList(Pageable pageable) {
+        return ProductInfo.toPaging(productService.selectProductList(pageable));
     }
 }

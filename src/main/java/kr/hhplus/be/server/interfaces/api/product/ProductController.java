@@ -9,8 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.Collections;
 import kr.hhplus.be.server.application.product.ProductFacade;
 import kr.hhplus.be.server.application.product.dto.ProductInfo;
-import kr.hhplus.be.server.application.product.dto.ProductPage;
-import kr.hhplus.be.server.interfaces.api.product.ProductResponse.Paging;
+import kr.hhplus.be.server.interfaces.common.PagingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
@@ -34,7 +33,7 @@ public class ProductController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "조회 성공",
             content = @Content(
-                schema = @Schema(implementation = ProductResponse.Paging.class),
+                schema = @Schema(implementation = PagingResponse.class),
                 examples = @ExampleObject(
                     name = "성공 응답 예제",
                     value = """
@@ -53,11 +52,11 @@ public class ProductController {
     })
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PageableAsQueryParam
-    public ResponseEntity<ProductResponse.Paging> list(
+    public ResponseEntity<PagingResponse> list(
         @ParameterObject
         @PageableDefault Pageable pageable
     ) {
-        return ResponseEntity.ok(ProductResponse.Paging.from(productFacade.selectProductList(pageable)));
+        return ResponseEntity.ok(PagingResponse.from(productFacade.selectProductList(pageable)));
     }
 
 }
