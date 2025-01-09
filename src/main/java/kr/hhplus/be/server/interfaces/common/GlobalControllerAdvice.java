@@ -13,13 +13,13 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(value = RuntimeException.class)
     public ResponseEntity handleRuntimeException(RuntimeException e) {
         log.error(e.getMessage(), e);
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
     @ExceptionHandler(value = EntityNotFoundException.class)
     public ResponseEntity handleRuntimeException(EntityNotFoundException e) {
         log.error(e.getMessage(), e);
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
 }
