@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.application.coupon;
 
+import kr.hhplus.be.server.domain.coupon.CouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -7,4 +8,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CouponFacade {
 
+    private final CouponService couponService;
+
+    public void issueCoupon(long id, long userId) {
+        couponService.issueCoupon(id, userId);
+    }
 }

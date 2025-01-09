@@ -28,7 +28,7 @@ public class UserUnitTest {
 
     @Test
     @DisplayName("case - 유저가 존재하지 않을 경우 EntityNotFoundException 발생")
-    public void test1(){
+    public void userPointTest1(){
         // given
         long userId = 1L;
 
@@ -43,7 +43,7 @@ public class UserUnitTest {
 
     @Test
     @DisplayName("case - 유저의 포인트가 존재하지 않을 경우 포인트가 0인 포인트 객체 반환")
-    public void test2(){
+    public void userPointTest2(){
         // given
         long userId = 1L;
 
