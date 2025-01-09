@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDate;
 import kr.hhplus.be.server.domain.common.Base;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
 import kr.hhplus.be.server.domain.user.User;
@@ -41,5 +42,7 @@ public class IssuedCoupon extends Base {
 
     @Enumerated(EnumType.STRING)
     private CouponStatus status;
+
+    private LocalDate expireDate;
 
 }
