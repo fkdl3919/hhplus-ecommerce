@@ -4,6 +4,7 @@ import static kr.hhplus.be.server.domain.coupon.QIssuedCoupon.*;
 import static kr.hhplus.be.server.domain.product.QProduct.product;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Optional;
 import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
 import kr.hhplus.be.server.domain.coupon.QIssuedCoupon;
 import kr.hhplus.be.server.domain.coupon.repository.IssuedCouponRepository;
@@ -41,5 +42,10 @@ public class IssuedCouponRepositoryImpl implements IssuedCouponRepository {
             .fetchCount();
 
         return new PageImpl<>(issuedCoupons, pageable, total);
+    }
+
+    @Override
+    public Optional<IssuedCoupon> findById(long issuedCouponId) {
+        return issuedCouponJpaRepository.findById(issuedCouponId);
     }
 }
