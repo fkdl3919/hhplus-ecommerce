@@ -7,7 +7,6 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
 import kr.hhplus.be.server.domain.coupon.repository.CouponRepository;
-import kr.hhplus.be.server.domain.coupon.repository.IssuedCouponRepository;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserService;
 import kr.hhplus.be.server.domain.user.repository.UserRepository;
@@ -27,9 +26,6 @@ public class CouponUnitTest {
 
     @Mock
     private CouponRepository couponRepository;
-
-    @Mock
-    private IssuedCouponRepository issuedCouponRepository;
 
     @Mock
     private UserRepository userRepository;
@@ -94,7 +90,7 @@ public class CouponUnitTest {
     }
 
     @Test
-    @DisplayName("case - 쿠폰 발급시 쿠폰 수량이 모두 소진되었다면 IllegalArgumentException 발생")
+    @DisplayName("case - 쿠폰 발급시 유저와 쿠폰 매핑 데이터가 저장되지 않았다면 IllegalArgumentException 발생")
     public void issuedCouponTest4(){
         // given
         long userId = 1L;
@@ -112,7 +108,7 @@ public class CouponUnitTest {
             .status(CouponStatus.NOT_USED)
             .build();
 
-        when(issuedCouponRepository.save(any())).thenReturn(issuedCoupon);
+        when(couponRepository.saveIssuedCoupon(any())).thenReturn(issuedCoupon);
 
         // when
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> couponService.issueCoupon(couponId, userId));
