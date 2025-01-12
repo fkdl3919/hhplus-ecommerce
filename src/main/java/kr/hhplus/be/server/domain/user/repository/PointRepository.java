@@ -11,4 +11,6 @@ public interface PointRepository {
 
 
     PointHistory saveHistory(PointHistory pointHistory);
+
+    Point save(Point point);
 }

@@ -4,13 +4,15 @@ import java.util.Optional;
 import kr.hhplus.be.server.domain.user.Point;
 import kr.hhplus.be.server.domain.user.PointHistory;
 import kr.hhplus.be.server.domain.user.repository.PointRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@RequiredArgsConstructor
 public class PointRepositoryImpl implements PointRepository {
 
-    private PointJpaRepository pointJpaRepository;
-    private PointHistoryJpaRepository pointHistoryJpaRepository;
+    private final PointJpaRepository pointJpaRepository;
+    private final PointHistoryJpaRepository pointHistoryJpaRepository;
 
     @Override
     public Optional<Point> findPointByUserIdWithLock(long userId) {
@@ -20,6 +22,11 @@ public class PointRepositoryImpl implements PointRepository {
     @Override
     public PointHistory saveHistory(PointHistory pointHistory) {
         return pointHistoryJpaRepository.save(pointHistory);
+    }
+
+    @Override
+    public Point save(Point point) {
+        return pointJpaRepository.save(point);
     }
 
 }

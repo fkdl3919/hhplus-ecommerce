@@ -11,4 +11,6 @@ public interface ProductRepository {
     Page<Product> selectProductList(Pageable pageable);
 
     Optional<Product> findProductWithLock(Long id);
+
+    Product save(Product build);
 }

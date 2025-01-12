@@ -6,6 +6,7 @@ import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.order.command.OrderCommand.OrderItemCommand;
 import kr.hhplus.be.server.domain.order.enums.OrderStatus;
+import kr.hhplus.be.server.domain.order.info.OrderInfo;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentService;
 import kr.hhplus.be.server.domain.payment.command.PaymentCommand;
@@ -34,7 +35,7 @@ public class OrderFacade {
     private final CouponService couponService;
 
     @Transactional
-    public void orderPayment(OrderCommand command) {
+    public OrderInfo orderPayment(OrderCommand command) {
         // 사용자 및 포인트 조회
         User user = userService.findUser(command.userId());
         Point userPoint = userService.findPoint(command.userId());
@@ -79,6 +80,8 @@ public class OrderFacade {
             // 외부 플랫폼으로 데이터 전송
             Dataplatform.sendData(order);
         }
+
+        return OrderInfo.of(order);
 
     }
 

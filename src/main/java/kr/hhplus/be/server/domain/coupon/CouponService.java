@@ -22,10 +22,10 @@ public class CouponService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void issueCoupon(long id, long userId) {
+    public IssuedCoupon issueCoupon(long couponId, long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
 
-        Coupon coupon = couponRepository.findByIdWithLock(id).orElseThrow(() -> new EntityNotFoundException("쿠폰이 존재하지 않습니다."));
+        Coupon coupon = couponRepository.findByIdWithLock(couponId).orElseThrow(() -> new EntityNotFoundException("쿠폰이 존재하지 않습니다."));
 
         // 쿠폰 수량체크
         coupon.validAvailable();
@@ -47,6 +47,8 @@ public class CouponService {
 
         // 쿠폰 수량차감
         coupon.decreaseStock();
+
+        return issuedCoupon;
 
     }
 

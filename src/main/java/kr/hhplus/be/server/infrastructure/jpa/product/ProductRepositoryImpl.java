@@ -44,4 +44,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Optional<Product> findProductWithLock(Long id) {
         return Optional.of(productJpaRepository.findProductWithLock(id));
     }
+
+    @Override
+    public Product save(Product build) {
+        return productJpaRepository.save(build);
+    }
 }

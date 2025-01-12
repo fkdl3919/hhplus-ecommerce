@@ -2,6 +2,7 @@ package kr.hhplus.be.server.domain.coupon.repository;
 
 import java.util.Optional;
 import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.Coupon.CouponBuilder;
 import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,4 +18,6 @@ public interface CouponRepository {
     Page<IssuedCoupon> selectIssuedCouponList(long userId, Pageable pageable);
 
     Optional<IssuedCoupon> findIssuedCouponById(long issuedCouponId);
+
+    Coupon save(Coupon coupon);
 }
