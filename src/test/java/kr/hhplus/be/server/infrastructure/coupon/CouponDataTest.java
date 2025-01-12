@@ -71,7 +71,7 @@ public class CouponDataTest {
      */
     @Test
     @DisplayName("case - 사용자 보유쿠폰 목록 조회 시 페이징 처리가 올바른지 테스트")
-    public void test1(){
+    public void issuedCouponListTest1(){
         // given
         int setUpCount = 25;
         int pageSize = 10;
