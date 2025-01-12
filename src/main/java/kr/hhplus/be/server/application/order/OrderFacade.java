@@ -13,6 +13,7 @@ import kr.hhplus.be.server.domain.payment.enums.PaymentStatus;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductService;
 import kr.hhplus.be.server.domain.user.Point;
+import kr.hhplus.be.server.domain.user.PointHistory;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserService;
 import kr.hhplus.be.server.domain.user.info.PointInfo;
@@ -69,7 +70,8 @@ public class OrderFacade {
          * 포인트 사용 및 히스토리 저장, 주문 성공
          */
         if(payment.getId() != null && payment.getStatus() == PaymentStatus.CONFIRMED){
-            userPoint.use(amountCalculator.discountAmount(discountRate));
+            PointHistory pointHistory = userPoint.use(amountCalculator.discountAmount(discountRate));
+            userService.use(pointHistory);
 
             // 주문 상태 성공
             order.setStatus(OrderStatus.CONFIRMED);
