@@ -3,13 +3,14 @@ package kr.hhplus.be.server.domain.coupon;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import kr.hhplus.be.server.domain.coupon.info.IssuedCouponInfo;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
 import kr.hhplus.be.server.domain.coupon.repository.CouponRepository;
 import kr.hhplus.be.server.domain.coupon.repository.IssuedCouponRepository;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,18 +52,20 @@ public class CouponService {
 
     }
 
-    public Page<IssuedCoupon> selectIssuedCouponList(long userId, Pageable pageable) {
+    public PageImpl<IssuedCouponInfo> selectIssuedCouponList(long userId, Pageable pageable) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
 
-        return issuedCouponRepository.selectIssuedCouponList(userId, pageable);
+        return IssuedCouponInfo.toPaging(issuedCouponRepository.selectIssuedCouponList(userId, pageable));
     }
 
-    public IssuedCoupon findIssuedCouponById(long issuedCouponId) {
-        return issuedCouponRepository.findById(issuedCouponId).orElseThrow(() -> new EntityNotFoundException("보유쿠폰이 존재하지 않습니다."));
+    /**
+     * 발급쿠폰 유효기간 검증 후 쿠폰의 할인율 반환
+     * @param issuedCouponId
+     * @return
+     */
+    public long getDiscountRate(long issuedCouponId) {
+        IssuedCoupon issuedCoupon = issuedCouponRepository.findById(issuedCouponId).orElseThrow(() -> new EntityNotFoundException("보유쿠폰이 존재하지 않습니다."));
+        issuedCoupon.validCouponExpired();
+        return issuedCoupon.getCoupon().getDiscountRate();
     }
-
-    public Coupon findCouponById(long couponId) {
-        return couponRepository.findById(couponId).orElseThrow(() -> new EntityNotFoundException("쿠폰이 존재하지 않습니다."));
-    }
-
 }

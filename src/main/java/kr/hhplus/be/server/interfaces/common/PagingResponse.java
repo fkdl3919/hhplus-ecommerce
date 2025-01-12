@@ -2,7 +2,6 @@ package kr.hhplus.be.server.interfaces.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-import kr.hhplus.be.server.application.coupon.dto.CouponInfo;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 

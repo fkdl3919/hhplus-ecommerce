@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import kr.hhplus.be.server.application.user.UserFacade;
+import kr.hhplus.be.server.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserFacade userFacade;
+
+    private final UserService userService;
 
     @Operation(summary = "잔액 조회", description = "사용자의 잔액을 조회합니다.")
     @ApiResponses(value = {
@@ -46,7 +47,7 @@ public class UserController {
         @Parameter(description = "유저 id", example = "11")
         @PathVariable long id
     ) {
-        return ResponseEntity.ok(new UserResponse(id, userFacade.getUserPoint(id)));
+        return ResponseEntity.ok(new UserResponse(id, userService.userPoint(id)));
     }
 
     @Operation(summary = "잔액 충전", description = "사용자 잔액을 충전합니다.")
@@ -63,7 +64,7 @@ public class UserController {
         @RequestBody long amount
 
     ) {
-        userFacade.chargePoint(id, amount);
+        userService.chargePoint(id, amount);
         return ResponseEntity.ok().build();
     }
 

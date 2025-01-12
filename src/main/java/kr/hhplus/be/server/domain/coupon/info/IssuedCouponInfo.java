@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.application.coupon.dto;
+package kr.hhplus.be.server.domain.coupon.info;
 
 import java.time.LocalDate;
 import java.util.List;

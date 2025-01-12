@@ -43,8 +43,11 @@ public class Payment extends Base {
     @JoinColumn(name = "order_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Order order;
 
-    // 결제금액
-    private Long amount;
+    // 쿠폰 적용 전 금액
+    private Long originalPrice;
+
+    // 실제 결제 금액
+    private Long payPrice;
 
     // 결제 완료시간
     private LocalDateTime paidAt;

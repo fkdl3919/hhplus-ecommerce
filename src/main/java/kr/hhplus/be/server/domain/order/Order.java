@@ -36,12 +36,6 @@ public class Order extends Base {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 상품 가격
-    private Long originalPrice;
-
-    // 상품 주문 가격
-    private Long orderPrice;
-
     @ManyToOne
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
