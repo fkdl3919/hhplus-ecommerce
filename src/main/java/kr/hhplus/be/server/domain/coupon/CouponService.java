@@ -6,7 +6,6 @@ import java.time.temporal.ChronoUnit;
 import kr.hhplus.be.server.domain.coupon.info.IssuedCouponInfo;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
 import kr.hhplus.be.server.domain.coupon.repository.CouponRepository;
-import kr.hhplus.be.server.domain.coupon.repository.IssuedCouponRepository;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class CouponService {
 
     private final CouponRepository couponRepository;
-    private final IssuedCouponRepository issuedCouponRepository;
     private final UserRepository userRepository;
 
     @Transactional
     public void issueCoupon(long id, long userId) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
 
         Coupon coupon = couponRepository.findByIdWithLock(id).orElseThrow(() -> new EntityNotFoundException("쿠폰이 존재하지 않습니다."));
 
@@ -41,7 +39,7 @@ public class CouponService {
             .build();
 
         // 유저와 쿠폰 매핑한 데이터 저장
-        issuedCouponRepository.save(issuedCoupon);
+        couponRepository.saveIssuedCoupon(issuedCoupon);
 
         if(issuedCoupon.getId() == null){
             throw new IllegalArgumentException("쿠폰을 입력하는 도중 오류가 발생하였습니다.");
@@ -55,7 +53,7 @@ public class CouponService {
     public PageImpl<IssuedCouponInfo> selectIssuedCouponList(long userId, Pageable pageable) {
         userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
 
-        return IssuedCouponInfo.toPaging(issuedCouponRepository.selectIssuedCouponList(userId, pageable));
+        return IssuedCouponInfo.toPaging(couponRepository.selectIssuedCouponList(userId, pageable));
     }
 
     /**
@@ -64,7 +62,7 @@ public class CouponService {
      * @return
      */
     public long getDiscountRate(long issuedCouponId) {
-        IssuedCoupon issuedCoupon = issuedCouponRepository.findById(issuedCouponId).orElseThrow(() -> new EntityNotFoundException("보유쿠폰이 존재하지 않습니다."));
+        IssuedCoupon issuedCoupon = couponRepository.findIssuedCouponById(issuedCouponId).orElseThrow(() -> new EntityNotFoundException("보유쿠폰이 존재하지 않습니다."));
         issuedCoupon.validCouponExpired();
         return issuedCoupon.getCoupon().getDiscountRate();
     }
