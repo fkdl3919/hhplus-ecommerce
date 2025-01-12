@@ -1,14 +1,9 @@
-package kr.hhplus.be.server.domain.user;
+package kr.hhplus.be.server.domain.coupon;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import kr.hhplus.be.server.domain.common.Base;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,12 +17,22 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User extends Base {
+public class Coupon extends Base {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private Integer stock;
+
+    private Integer discountRate;
+
+    public void validAvailable(){
+        if(this.stock == null || this.stock <= 0) throw new IllegalArgumentException("쿠폰이 모두 소진되었습니다.");
+    }
+
+    public void decreaseStock(){
+        this.stock--;
+    }
 
 }
