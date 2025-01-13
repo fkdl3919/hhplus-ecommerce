@@ -13,7 +13,7 @@ public record OrderInfo(
 ) {
 
     public static OrderInfo of(Order order) {
-        return new OrderInfo(order.getId(), order.getUser().getId(), order.getIssuedCoupon().getId(), order.getStatus());
+        return new OrderInfo(order.getId(), order.getUser().getId(), order.getIssuedCoupon() != null ? order.getIssuedCoupon().getId() : null, order.getStatus());
     }
 
 }

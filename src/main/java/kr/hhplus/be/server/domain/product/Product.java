@@ -38,7 +38,6 @@ public class Product extends Base {
 
         if(requestStock > stock) throw new IllegalArgumentException("요청하신 수량이 상품 재고수량을 초과하였습니다.");
 
-        if(price > userPoint) throw new IllegalArgumentException("보유 포인트가 부족합니다.");
     }
 
 }

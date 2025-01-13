@@ -8,7 +8,7 @@ public record OrderCommand(
     long userId,
 
     @Schema(description = "보유쿠폰 id")
-    long issuedCouponId,
+    Long issuedCouponId,
 
     @Schema(description = "상품 목록")
     List<OrderItemCommand> products

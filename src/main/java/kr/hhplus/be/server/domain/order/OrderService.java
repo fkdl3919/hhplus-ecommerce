@@ -26,8 +26,11 @@ public class OrderService {
         Order order = Order.builder()
             .user(User.builder().id(orderCommand.userId()).build())
             .status(OrderStatus.PENDING)
-            .issuedCoupon(IssuedCoupon.builder().id(orderCommand.issuedCouponId()).build())
             .build();
+
+        if(orderCommand.issuedCouponId() != null){
+            order.setIssuedCoupon(IssuedCoupon.builder().id(orderCommand.issuedCouponId()).build());
+        }
 
         Order save = orderRepository.save(order);
 

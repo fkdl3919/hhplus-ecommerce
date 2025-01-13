@@ -63,7 +63,8 @@ public class CouponService {
      * @param issuedCouponId
      * @return
      */
-    public long getDiscountRate(long issuedCouponId) {
+    public long getDiscountRate(Long issuedCouponId) {
+        if(issuedCouponId == null) return 0;
         IssuedCoupon issuedCoupon = couponRepository.findIssuedCouponById(issuedCouponId).orElseThrow(() -> new EntityNotFoundException("보유쿠폰이 존재하지 않습니다."));
         issuedCoupon.validCouponExpired();
         return issuedCoupon.getCoupon().getDiscountRate();
