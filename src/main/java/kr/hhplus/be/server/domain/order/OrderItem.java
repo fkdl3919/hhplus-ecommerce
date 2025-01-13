@@ -37,7 +37,7 @@ public class OrderItem extends Base {
     private Product product;
 
     // 상품수량
-    private Long quantity;
+    private Integer quantity;
 
 
 }

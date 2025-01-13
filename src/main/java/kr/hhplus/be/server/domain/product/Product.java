@@ -30,14 +30,15 @@ public class Product extends Base {
     private Integer stock;
 
     /**
-     * 주문을 위한 상품 검증
+     * 상품 갯수 차감
      *
      */
-    public void verifyProductStock(long requestStock, Long userPoint) {
+    public void decrementProductStock(int requestStock, Long userPoint) {
         if(stock == null || stock <= 0) throw new IllegalArgumentException("상품이 품절되었습니다.");
 
         if(requestStock > stock) throw new IllegalArgumentException("요청하신 수량이 상품 재고수량을 초과하였습니다.");
 
+        stock -= requestStock;
     }
 
 }

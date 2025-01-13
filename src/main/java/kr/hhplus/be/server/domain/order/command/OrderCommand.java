@@ -19,7 +19,7 @@ public record OrderCommand(
         long productId,
 
         @Schema(description = "상품 수량")
-        long quantity
+        int quantity
     ) {
     }
 }

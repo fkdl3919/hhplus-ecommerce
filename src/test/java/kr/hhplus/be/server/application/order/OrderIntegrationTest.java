@@ -106,7 +106,7 @@ public class OrderIntegrationTest {
         Product product = setUpProduct(productStock, productPrice);
 
         // 상품 별 주문 수량
-        final long quantity = 10;
+        final int quantity = 10;
         List<OrderItemCommand> orderItemCommands = List.of(
             new OrderItemCommand(product.getId(), quantity)
         );
@@ -142,7 +142,7 @@ public class OrderIntegrationTest {
         Product product = setUpProduct(productStock, productPrice);
 
         // 상품 별 주문 수량
-        final long quantity = 10;
+        final int quantity = 10;
         List<OrderItemCommand> orderItemCommands = List.of(
             new OrderItemCommand(product.getId(), quantity)
         );
@@ -187,7 +187,7 @@ public class OrderIntegrationTest {
         List<Product> products = setUpProducts(productStock, productPrice, loop);
 
         // 상품 별 주문 수량
-        final long quantity = 10;
+        final int quantity = 10;
 
         // 주문 아이템
         List<OrderItemCommand> orderItemCommands = new ArrayList<>();
@@ -237,7 +237,7 @@ public class OrderIntegrationTest {
         Product product = setUpProduct(productStock, productPrice);
 
         // 상품 별 주문 수량
-        final long orderQuantity = 10;
+        final int orderQuantity = 10;
 
         List<OrderItemCommand> orderItemCommands = List.of(
             new OrderItemCommand(product.getId(), orderQuantity)
@@ -283,7 +283,7 @@ public class OrderIntegrationTest {
         Product product = setUpProduct(productStock, productPrice);
 
         // 상품 별 주문 수량
-        final long quantity = 10;
+        final int quantity = 10;
         List<OrderItemCommand> orderItemCommands = List.of(
             new OrderItemCommand(product.getId(), quantity)
         );

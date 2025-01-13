@@ -5,7 +5,6 @@ import kr.hhplus.be.server.domain.order.command.OrderCommand;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.order.OrderService;
 import kr.hhplus.be.server.domain.order.command.OrderCommand.OrderItemCommand;
-import kr.hhplus.be.server.domain.order.enums.OrderStatus;
 import kr.hhplus.be.server.domain.order.info.OrderInfo;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentService;
@@ -46,7 +45,7 @@ public class OrderFacade {
 
         for (OrderItemCommand o : command.products()) {
             Product product = productService.findProductWithLock(o.productId());
-            product.verifyProductStock(o.quantity(), userPoint.getPoint());
+            product.decrementProductStock(o.quantity(), userPoint.getPoint());
 
             // 상품 주문금액 계산 후 누적
             amountCalculator.addAmount(product.getPrice(), o.quantity());

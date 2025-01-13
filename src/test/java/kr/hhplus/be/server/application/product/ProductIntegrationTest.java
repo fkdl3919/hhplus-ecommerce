@@ -56,7 +56,7 @@ public class ProductIntegrationTest {
         return productRepository.save(Product.builder().price(price).name(name).stock(stock).build());
     }
 
-    public Order setUpOrder(long userId, long productId, long orderQuantity) {
+    public Order setUpOrder(long userId, long productId, int orderQuantity) {
         Order order = Order.builder()
             .user(User.builder().id(userId).build())
             .build();
@@ -84,10 +84,10 @@ public class ProductIntegrationTest {
         User user = setUpUser();
 
         // setup 상품 가격 100
-        final int productPrice = 100;
+        final long productPrice = 100;
 
         // setup 상품 수량
-        final int productStock = 10;
+        final int productStock = 1000;
 
         // setup 상품
         String productName = "선풍기";
@@ -107,25 +107,25 @@ public class ProductIntegrationTest {
         Product product7 = setUpProduct(productStock, productPrice, productName7);
 
         // setup 주문 - 선풍기
-        setUpOrder(user.getId(), product.getId(), 1);
+        setUpOrder(user.getId(), product.getId(), 100);
 
         // setup 주문 - 세탁기
-        setUpOrder(user.getId(), product2.getId(), 2);
+        setUpOrder(user.getId(), product2.getId(), 200);
 
         // setup 주문 - 컴퓨터
-        setUpOrder(user.getId(), product3.getId(), 3);
+        setUpOrder(user.getId(), product3.getId(), 300);
 
         // setup 주문 - 건조기
-        setUpOrder(user.getId(), product4.getId(), 4);
+        setUpOrder(user.getId(), product4.getId(), 400);
 
         // setup 주문 - 전자레인지
-        setUpOrder(user.getId(), product5.getId(), 5);
+        setUpOrder(user.getId(), product5.getId(), 500);
 
         // setup 주문 - 청소기
-        setUpOrder(user.getId(), product6.getId(), 6);
+        setUpOrder(user.getId(), product6.getId(), 600);
 
         // setup 주문 - 스타일러
-        setUpOrder(user.getId(), product7.getId(), 7);
+        setUpOrder(user.getId(), product7.getId(), 700);
 
 
         // when

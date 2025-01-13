@@ -5,13 +5,11 @@ import static org.mockito.Mockito.*;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
 import kr.hhplus.be.server.domain.product.repository.ProductRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,12 +32,12 @@ public class ProductUnitTest {
             .stock(0)
             .build();
 
-        long requestStock = 5;
+        int requestStock = 5;
         long userPoint = 1000;
 
         // when
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-           product.verifyProductStock(requestStock, userPoint);
+           product.decrementProductStock(requestStock, userPoint);
         });
 
         // then
@@ -55,12 +53,12 @@ public class ProductUnitTest {
             .stock(3)
             .build();
 
-        long requestStock = 5;
+        int requestStock = 5;
         long userPoint = 1000;
 
         // when
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            product.verifyProductStock(requestStock, userPoint);
+            product.decrementProductStock(requestStock, userPoint);
         });
 
         // then
@@ -77,12 +75,12 @@ public class ProductUnitTest {
             .price(2000L)
             .build();
 
-        long requestStock = 5;
+        int requestStock = 5;
         long userPoint = 1000;
 
         // when
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            product.verifyProductStock(requestStock, userPoint);
+            product.decrementProductStock(requestStock, userPoint);
         });
 
         // then
