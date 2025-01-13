@@ -1,6 +1,7 @@
 package kr.hhplus.be.server.domain.product;
 
 import jakarta.persistence.EntityNotFoundException;
+import java.util.List;
 import kr.hhplus.be.server.domain.product.info.ProductInfo;
 import kr.hhplus.be.server.domain.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +23,10 @@ public class ProductService {
 
     public PageImpl<ProductInfo> selectProductList(Pageable pageable) {
         return ProductInfo.toPaging(productRepository.selectProductList(pageable));
+    }
+
+    public List<ProductInfo> selectTopSellingProductList() {
+        List<Product> products = productRepository.selectTopSellingProductList();
+        return ProductInfo.toInfos(products);
     }
 }

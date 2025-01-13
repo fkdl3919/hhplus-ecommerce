@@ -73,7 +73,7 @@ public class OrderFacade {
             userService.use(pointHistory);
 
             // 주문 상태 성공
-            order.setStatus(OrderStatus.CONFIRMED);
+            order.confirmOrder();
 
             // 외부 플랫폼으로 데이터 전송
             Dataplatform.sendData(order);

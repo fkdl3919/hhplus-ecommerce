@@ -3,8 +3,13 @@ package kr.hhplus.be.server.infrastructure.jpa.product;
 import static kr.hhplus.be.server.domain.product.QProduct.*;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
+import kr.hhplus.be.server.domain.order.QOrder;
+import kr.hhplus.be.server.domain.order.QOrderItem;
+import kr.hhplus.be.server.domain.order.enums.OrderStatus;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.QProduct;
 import kr.hhplus.be.server.domain.product.repository.ProductRepository;
@@ -48,5 +53,33 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Product save(Product build) {
         return productJpaRepository.save(build);
+    }
+
+    @Override
+    public List<Product> selectTopSellingProductList() {
+
+        List<Product> products = queryFactory
+            .selectFrom(product)
+            .join(QOrderItem.orderItem)
+                .on(
+                    QOrderItem.orderItem.product.eq(product)
+                )
+            .join(QOrder.order)
+                .on(
+                    QOrderItem.orderItem.order.eq(QOrder.order)
+                        .and(QOrder.order.status.eq(OrderStatus.CONFIRMED))
+                )
+            .where(
+                // 최근 3일 전부터
+                QOrder.order.orderedAt.gt(LocalDateTime.now().minus(3, ChronoUnit.DAYS))
+            )
+            .orderBy(
+                // 상품 별 수량 오름차순
+                QOrderItem.orderItem.quantity.desc()
+            )
+            .limit(5)
+            .fetch();
+
+        return products;
     }
 }
