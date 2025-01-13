@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import kr.hhplus.be.server.domain.common.Base;
 import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
@@ -36,12 +37,6 @@ public class Order extends Base {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 상품 가격
-    private Long originalPrice;
-
-    // 상품 주문 가격
-    private Long orderPrice;
-
     @ManyToOne
     @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private User user;
@@ -50,7 +45,15 @@ public class Order extends Base {
     @JoinColumn(name = "issued_coupon_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private IssuedCoupon issuedCoupon;
 
+    // 주문 완료시간
+    private LocalDateTime orderedAt;
+
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+
+    public void confirmOrder(){
+        this.status = OrderStatus.CONFIRMED;
+        this.orderedAt = LocalDateTime.now();
+    }
 
 }

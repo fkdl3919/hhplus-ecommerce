@@ -7,8 +7,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import kr.hhplus.be.server.application.coupon.CouponFacade;
 import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.interfaces.api.product.ProductResponse;
 import kr.hhplus.be.server.interfaces.common.PagingResponse;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class CouponController {
 
-    private final CouponFacade couponFacade;
+    private final CouponService couponService;
 
     @Operation(summary = "쿠폰 발급", description = "선착순으로 쿠폰을 발급받습니다.")
     @ApiResponses(value = {
@@ -44,7 +44,7 @@ public class CouponController {
         @Parameter(description = "유저 id", example = "1")
         @RequestBody long userId) {
 
-        couponFacade.issueCoupon(id, userId);
+        couponService.issueCoupon(id, userId);
         return  ResponseEntity.ok().build();
     }
 
@@ -77,7 +77,7 @@ public class CouponController {
         @ParameterObject
         @PageableDefault Pageable pageable
     ) {
-        return ResponseEntity.ok(PagingResponse.from(couponFacade.selectIssuedCouponList(userId, pageable)));
+        return ResponseEntity.ok(PagingResponse.from(couponService.selectIssuedCouponList(userId, pageable)));
     }
 
 }

@@ -7,9 +7,7 @@ import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
 import kr.hhplus.be.server.domain.coupon.repository.CouponRepository;
-import kr.hhplus.be.server.domain.coupon.repository.IssuedCouponRepository;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.repository.UserRepository;
 import kr.hhplus.be.server.infrastructure.jpa.coupon.CouponJpaRepository;
 import kr.hhplus.be.server.infrastructure.jpa.coupon.issuedcoupon.IssuedCouponJpaRepository;
 import kr.hhplus.be.server.infrastructure.jpa.user.UserJpaRepository;
@@ -20,13 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 
 @SpringBootTest
 public class CouponDataTest {
 
     @Autowired
-    private IssuedCouponRepository issuedCouponRepository;
+    private CouponRepository couponRepository;
 
     @Autowired
     private IssuedCouponJpaRepository issuedCouponJpaRepository;
@@ -74,7 +71,7 @@ public class CouponDataTest {
      */
     @Test
     @DisplayName("case - 사용자 보유쿠폰 목록 조회 시 페이징 처리가 올바른지 테스트")
-    public void test1(){
+    public void issuedCouponListTest1(){
         // given
         int setUpCount = 25;
         int pageSize = 10;
@@ -96,7 +93,7 @@ public class CouponDataTest {
 
             // page 별 pageable 생성
             Pageable pageable = PageRequest.of(page, pageSize);
-            Page<IssuedCoupon> issuedCoupons = issuedCouponRepository.selectIssuedCouponList(userId, pageable);
+            Page<IssuedCoupon> issuedCoupons = couponRepository.selectIssuedCouponList(userId, pageable);
 
             // then
             // 조회 시 페이지별 수량 비교

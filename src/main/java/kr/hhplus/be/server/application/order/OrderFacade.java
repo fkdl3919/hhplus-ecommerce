@@ -1,18 +1,20 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.application.order.dto.OrderCommand;
-import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.CouponService;
-import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.command.OrderCommand;
+import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.order.OrderService;
+import kr.hhplus.be.server.domain.order.command.OrderCommand.OrderItemCommand;
 import kr.hhplus.be.server.domain.order.enums.OrderStatus;
+import kr.hhplus.be.server.domain.order.info.OrderInfo;
 import kr.hhplus.be.server.domain.payment.Payment;
 import kr.hhplus.be.server.domain.payment.PaymentService;
+import kr.hhplus.be.server.domain.payment.command.PaymentCommand;
 import kr.hhplus.be.server.domain.payment.enums.PaymentStatus;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductService;
 import kr.hhplus.be.server.domain.user.Point;
+import kr.hhplus.be.server.domain.user.PointHistory;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserService;
 import kr.hhplus.be.server.infrastructure.dataplatform.Dataplatform;
@@ -31,60 +33,54 @@ public class OrderFacade {
     private final CouponService couponService;
 
     @Transactional
-    public void order(OrderCommand command) {
-        // 사용자 검증 및 포인트 조회
+    public OrderInfo orderPayment(OrderCommand command) {
+        // 사용자 및 포인트 조회
         User user = userService.findUser(command.userId());
         Point userPoint = userService.findPoint(command.userId());
 
-        // 상품 검증
-        Product product = productService.findProductWithLock(command.productId());
-        product.validForOrder(command.stock(), userPoint.getPoint());
+        /**
+         * 주문
+         */
+        // 상품 및 수량확인
+        AmountCalculator amountCalculator = new AmountCalculator();
 
-        // 쿠폰 검증
-        long discountRate = 0;
-        IssuedCoupon issuedCoupon = null;
-        if(command.issuedCouponId() != 0) {
-            issuedCoupon = couponService.findIssuedCouponById(command.issuedCouponId());
-            issuedCoupon.validForOrder();
+        for (OrderItemCommand o : command.products()) {
+            Product product = productService.findProductWithLock(o.productId());
+            product.verifyProductStock(o.quantity(), userPoint.getPoint());
 
-            Coupon coupon = issuedCoupon.getCoupon();
-
-            discountRate = coupon.getDiscountRate();
+            // 상품 주문금액 계산 후 누적
+            amountCalculator.addAmount(product.getPrice(), o.quantity());
         }
 
-        Long originalPrice = product.getPrice() * command.stock() ;
-        Long orderPrice = originalPrice - (originalPrice * discountRate / 100) ;
+        // 주문생성 (상품 id, 상품 수량)
+        Order order = orderService.order(command);
 
-        // 주문 생성
-        Order order = orderService.order(
-            Order.builder()
-                .originalPrice(originalPrice)
-                .orderPrice(orderPrice)
-                .user(user)
-                .status(OrderStatus.PENDING)
-                .issuedCoupon(issuedCoupon)
-                .build()
-        );
+        /**
+         * 결제
+         */
+        // 쿠폰 할인율
+        long discountRate = couponService.getDiscountRate(command.issuedCouponId());
 
-        // 결제 및 포인트 차감
         Payment payment = paymentService.pay(
-            Payment.builder()
-                .user(user)
-                .order(order)
-                .amount(orderPrice)
-                .status(PaymentStatus.PENDING)
-                .build(),
-            userPoint
+            new PaymentCommand(user.getId(), order.getId(), amountCalculator.getTotalAmount(), amountCalculator.getDiscountAmount(discountRate))
         );
 
-        // 결제가 완료되지 않았다면 exception
-        if(payment.getStatus() != PaymentStatus.CONFIRMED) throw new RuntimeException("결제가 실패하였습니다.");
+        /**
+         * 포인트 사용 및 히스토리 저장, 주문 성공
+         */
+        if(payment.getId() != null && payment.getStatus() == PaymentStatus.CONFIRMED){
+            PointHistory pointHistory = userPoint.use(amountCalculator.getDiscountAmount(discountRate));
+            userService.use(pointHistory);
 
-        // 결제 완료 시 주문 완료
-        order.setStatus(OrderStatus.CONFIRMED);
+            // 주문 상태 성공
+            order.confirmOrder();
 
-        // 외부 플랫폼으로 데이터 전송
-        Dataplatform.sendData(order);
+            // 외부 플랫폼으로 데이터 전송
+            Dataplatform.sendData(order);
+        }
+
+        return OrderInfo.of(order);
 
     }
+
 }

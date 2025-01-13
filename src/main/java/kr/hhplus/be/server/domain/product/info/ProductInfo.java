@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.application.product.dto;
+package kr.hhplus.be.server.domain.product.info;
 
 import java.util.List;
 import java.util.stream.Collectors;
