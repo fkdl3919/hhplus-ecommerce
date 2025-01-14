@@ -25,7 +25,7 @@ public class Coupon extends Base {
 
     private Integer stock;
 
-    private Integer discountRate;
+    private Integer discountRate = 0;
 
     public void validAvailable(){
         if(this.stock == null || this.stock <= 0) throw new IllegalArgumentException("쿠폰이 모두 소진되었습니다.");

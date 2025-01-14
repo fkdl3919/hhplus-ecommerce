@@ -49,4 +49,7 @@ public class IssuedCoupon extends Base {
         if(this.expireDate == null || this.expireDate.isBefore(LocalDate.now())) throw new IllegalArgumentException("보유하신 쿠폰의 유효기간이 만료되었습니다.");
     }
 
+    public void use() {
+        this.status = CouponStatus.USED;
+    }
 }

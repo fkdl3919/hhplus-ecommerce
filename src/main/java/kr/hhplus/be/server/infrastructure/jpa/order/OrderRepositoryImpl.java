@@ -3,7 +3,6 @@ package kr.hhplus.be.server.infrastructure.jpa.order;
 import java.util.List;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItem;
-import kr.hhplus.be.server.domain.order.command.OrderCommand.OrderItemCommand;
 import kr.hhplus.be.server.domain.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

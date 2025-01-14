@@ -38,10 +38,10 @@ public class CouponController {
     })
     @PostMapping("issue/{id}")
     public ResponseEntity issueCoupon(
-        @Parameter(description = "쿠폰 id", example = "1")
+        @Parameter(description = "쿠폰 userId", example = "1")
         @PathVariable long id,
 
-        @Parameter(description = "유저 id", example = "1")
+        @Parameter(description = "유저 userId", example = "1")
         @RequestBody long userId) {
 
         couponService.issueCoupon(id, userId);
@@ -58,7 +58,7 @@ public class CouponController {
                     value = """
                             {
                                 "item": [
-                                    { "id": 1, "userId": 1, "couponId": 1, "discountRate": 10, "status": "NOT_USED" },
+                                    { "userId": 1, "userId": 1, "couponId": 1, "discountRate": 10, "status": "NOT_USED" },
                                 ],
                                 "totalCount": 100,
                                 "totalPages": 10
@@ -71,7 +71,7 @@ public class CouponController {
     @GetMapping(value = "/list/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PageableAsQueryParam
     public ResponseEntity<PagingResponse> list(
-        @Parameter(description = "유저 id", example = "1")
+        @Parameter(description = "유저 userId", example = "1")
         @RequestBody long userId,
 
         @ParameterObject

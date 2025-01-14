@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
+import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.user.repository.PointRepository;
 import kr.hhplus.be.server.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;

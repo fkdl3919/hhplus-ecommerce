@@ -1,9 +1,8 @@
-package kr.hhplus.be.server.infrastructure.jpa.user.point;
+package kr.hhplus.be.server.infrastructure.jpa.point;
 
 import jakarta.persistence.LockModeType;
 import java.util.Optional;
-import kr.hhplus.be.server.domain.user.Point;
-import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.domain.point.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;

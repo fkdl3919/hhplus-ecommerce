@@ -2,43 +2,23 @@ package kr.hhplus.be.server.interfaces.api.order;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-import java.util.stream.Collectors;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
-import kr.hhplus.be.server.domain.order.command.OrderCommand.OrderItemCommand;
+import kr.hhplus.be.server.domain.order.command.OrderCommand.Order;
+import kr.hhplus.be.server.domain.order.command.OrderCommand.Order.OrderItemCommand;
 
 public record OrderRequest(
-
-    @Schema(description = "사용자 id")
+    @Schema(description = "사용자 userId")
     long userId,
 
-    @Schema(description = "쿠폰 id")
-    long couponId,
+    @Schema(description = "보유쿠폰 userId")
+    Long issuedCouponId,
 
     @Schema(description = "상품 목록")
-    List<OrderItemRequest> products
-) {
+    List<OrderCommand.Order.OrderItemCommand> products
+){
 
-    /**
-     * 상품 리스트 정보 request
-     * @param productId
-     * @param quantity
-     */
-    public record OrderItemRequest(
-
-        @Schema(description = "상품 id")
-        long productId,
-
-        @Schema(description = "상품 수량")
-        int quantity
-
-    ) {
-        public OrderItemCommand toCommand() {
-            return new OrderItemCommand(productId, quantity);
-        }
-    }
-
-    public OrderCommand toCommand() {
-        return new OrderCommand(userId, couponId, products.stream().map(OrderItemRequest::toCommand).collect(Collectors.toList()));
+    public static OrderCommand.Order toOrder(OrderRequest request) {
+        return OrderCommand.Order.builder().userId(request.userId).issuedCouponId(request.issuedCouponId).products(request.products).build();
     }
 
 }

@@ -1,8 +1,8 @@
-package kr.hhplus.be.server.infrastructure.jpa.user.point;
+package kr.hhplus.be.server.infrastructure.jpa.point;
 
 import java.util.Optional;
-import kr.hhplus.be.server.domain.user.Point;
-import kr.hhplus.be.server.domain.user.PointHistory;
+import kr.hhplus.be.server.domain.point.Point;
+import kr.hhplus.be.server.domain.point.PointHistory;
 import kr.hhplus.be.server.domain.user.repository.PointRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

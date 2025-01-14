@@ -37,16 +37,15 @@ public class Order extends Base {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private User user;
+    private Long userId;
 
-    @OneToOne
-    @JoinColumn(name = "issued_coupon_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    private IssuedCoupon issuedCoupon;
+    private Long issuedCouponId;
 
     // 주문 완료시간
     private LocalDateTime orderedAt;
+
+    // 주문 금액
+    private Long orderPrice;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;

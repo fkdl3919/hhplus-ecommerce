@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.user.enums;
+package kr.hhplus.be.server.domain.point.enums;
 
 public enum PointTransactionType {
 

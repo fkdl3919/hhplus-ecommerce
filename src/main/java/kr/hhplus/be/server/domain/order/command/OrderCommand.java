@@ -2,24 +2,35 @@ package kr.hhplus.be.server.domain.order.command;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
+import lombok.Builder;
 
-public record OrderCommand(
-    @Schema(description = "사용자 id")
-    long userId,
+public class OrderCommand{
 
-    @Schema(description = "보유쿠폰 id")
-    Long issuedCouponId,
+    @Builder
+    public record Order(
 
-    @Schema(description = "상품 목록")
-    List<OrderItemCommand> products
-) {
+        @Schema(description = "사용자 userId")
+        long userId,
 
-    public record OrderItemCommand(
-        @Schema(description = "상품 id")
-        long productId,
+        @Schema(description = "보유쿠폰 userId")
+        Long issuedCouponId,
 
-        @Schema(description = "상품 수량")
-        int quantity
-    ) {
+        @Schema(description = "상품 목록")
+        List<OrderItemCommand> products,
+
+        @Schema(description = "상품 목록")
+        Long orderPrice
+        ) {
+
+        public record OrderItemCommand(
+            @Schema(description = "상품 userId")
+            long productId,
+
+            @Schema(description = "상품 수량")
+            int quantity
+        ) {
+        }
+
     }
+
 }

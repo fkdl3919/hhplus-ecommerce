@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain.user.repository;
 
-import kr.hhplus.be.server.domain.user.PointHistory;
-import kr.hhplus.be.server.domain.user.PointHistory.PointHistoryBuilder;
+import kr.hhplus.be.server.domain.point.PointHistory;
 
 public interface PointHistoryRepository {
 

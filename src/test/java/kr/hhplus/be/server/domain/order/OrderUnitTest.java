@@ -7,7 +7,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
-import kr.hhplus.be.server.domain.order.command.OrderCommand.OrderItemCommand;
+import kr.hhplus.be.server.domain.order.command.OrderCommand.Order.OrderItemCommand;
 import kr.hhplus.be.server.domain.order.enums.OrderStatus;
 import kr.hhplus.be.server.domain.order.repository.OrderRepository;
 import kr.hhplus.be.server.domain.user.User;

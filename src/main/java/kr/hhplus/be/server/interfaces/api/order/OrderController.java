@@ -42,7 +42,7 @@ public class OrderController {
     public ResponseEntity<OrderResponse> order(
         @RequestBody OrderRequest orderRequest
     ){
-        orderFacade.orderPayment(orderRequest.toCommand());
+        orderFacade.orderPayment(OrderRequest.toOrder(orderRequest));
         return ResponseEntity.ok().build();
     }
 

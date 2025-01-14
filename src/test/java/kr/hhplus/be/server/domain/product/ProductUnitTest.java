@@ -37,7 +37,7 @@ public class ProductUnitTest {
 
         // when
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-           product.decrementProductStock(requestStock, userPoint);
+           product.decrementStock(requestStock, userPoint);
         });
 
         // then
@@ -58,7 +58,7 @@ public class ProductUnitTest {
 
         // when
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            product.decrementProductStock(requestStock, userPoint);
+            product.decrementStock(requestStock, userPoint);
         });
 
         // then
@@ -80,7 +80,7 @@ public class ProductUnitTest {
 
         // when
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            product.decrementProductStock(requestStock, userPoint);
+            product.decrementStock(requestStock, userPoint);
         });
 
         // then

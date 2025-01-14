@@ -1,6 +1,5 @@
-package kr.hhplus.be.server.domain.user;
+package kr.hhplus.be.server.domain.point;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,7 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import kr.hhplus.be.server.domain.common.Base;
-import kr.hhplus.be.server.domain.user.enums.PointTransactionType;
+import kr.hhplus.be.server.domain.point.enums.PointTransactionType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
