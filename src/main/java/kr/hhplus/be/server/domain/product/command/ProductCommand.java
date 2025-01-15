@@ -13,6 +13,17 @@ public class ProductCommand {
     }
 
     @Builder
+    public record GetAmount(
+        @Schema(description = "상품 userId")
+        long productId,
+
+        @Schema(description = "상품 수량")
+        int quantity
+    ){
+    }
+
+
+    @Builder
     public record Deduct(
         @Schema(description = "상품 userId")
         long productId,

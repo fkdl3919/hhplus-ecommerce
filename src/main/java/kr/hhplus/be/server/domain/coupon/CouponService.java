@@ -3,12 +3,10 @@ package kr.hhplus.be.server.domain.coupon;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import kr.hhplus.be.server.domain.coupon.info.IssuedCouponInfo;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
-import kr.hhplus.be.server.domain.coupon.repository.CouponRepository;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.repository.UserRepository;
+import kr.hhplus.be.server.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -60,9 +58,11 @@ public class CouponService {
     }
 
     public Coupon getCoupon(Long issuedCouponId) {
+        // 쿠폰없다고 주문안되는게 아님
+        if(issuedCouponId == null) return new Coupon();
         IssuedCoupon issuedCoupon = couponRepository.findIssuedCouponById(issuedCouponId).orElseThrow(() -> new EntityNotFoundException("보유쿠폰이 존재하지 않습니다."));
         issuedCoupon.validCouponExpired();
-        return issuedCoupon.getCoupon();
+        return issuedCoupon != null ? issuedCoupon.getCoupon() : new Coupon();
     }
 
     public void useCoupon(Long issuedCouponId) {

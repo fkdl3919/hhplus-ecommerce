@@ -9,7 +9,7 @@ public class PaymentCommand {
     public record Pay(
         Long userId,
         Long orderId,
-        Long originalPrice,
+        Long orderPrice,
         Integer discountRate
     ){
 

@@ -31,6 +31,10 @@ public class OrderCommand{
         ) {
         }
 
+        public void validateAmount(Long amountOfProducts) {
+            if (!orderPrice().equals(amountOfProducts)) throw new IllegalArgumentException("주문금액이 유효하지 않습니다.");
+        }
+
     }
 
 }

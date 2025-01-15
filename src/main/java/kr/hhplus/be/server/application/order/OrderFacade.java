@@ -13,8 +13,8 @@ import kr.hhplus.be.server.domain.payment.command.PaymentCommand;
 import kr.hhplus.be.server.domain.point.PointService;
 import kr.hhplus.be.server.domain.point.command.PointCommand;
 import kr.hhplus.be.server.domain.product.ProductService;
-import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.product.command.ProductCommand;
+import kr.hhplus.be.server.domain.product.command.ProductCommand.Get;
 import kr.hhplus.be.server.domain.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,13 +33,14 @@ public class OrderFacade {
 
     @Transactional
     public OrderInfo orderPayment(OrderCommand.Order command) {
-        productService.getProducts(
-            command.products().stream().map((orderItemCommand) -> ProductCommand.Get.builder().productId(orderItemCommand.productId()).build()).collect(Collectors.toList())
+        Long amountOfProducts = productService.getAmountOfProducts(
+            command.products().stream().map((orderItemCommand) -> ProductCommand.GetAmount.builder().productId(orderItemCommand.productId()).quantity(orderItemCommand.quantity()).build()).collect(Collectors.toList())
         );
+        command.validateAmount(amountOfProducts);
         Order order = orderService.order(command);
         Coupon coupon = couponService.getCoupon(command.issuedCouponId());
         Payment payment = paymentService.pay(
-            PaymentCommand.Pay.builder().userId(command.userId()).orderId(order.getId()).originalPrice(order.getOrderPrice()).discountRate(coupon.getDiscountRate()).build()
+            PaymentCommand.Pay.builder().userId(command.userId()).orderId(order.getId()).orderPrice(command.orderPrice()).discountRate(coupon.getDiscountRate()).build()
         );
         pointService.use(PointCommand.Use.builder().userId(command.userId()).point(payment.getPayPrice()).build());
         couponService.useCoupon(command.issuedCouponId());
