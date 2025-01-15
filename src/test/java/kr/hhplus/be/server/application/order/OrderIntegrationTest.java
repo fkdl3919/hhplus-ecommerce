@@ -6,21 +6,21 @@ import java.util.List;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
-import kr.hhplus.be.server.domain.coupon.repository.CouponRepository;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
 import kr.hhplus.be.server.domain.order.command.OrderCommand.Order.OrderItemCommand;
 import kr.hhplus.be.server.domain.order.enums.OrderStatus;
 import kr.hhplus.be.server.domain.order.info.OrderInfo;
-import kr.hhplus.be.server.domain.order.repository.OrderRepository;
+import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.payment.Payment;
-import kr.hhplus.be.server.domain.payment.repository.PaymentRepository;
+import kr.hhplus.be.server.domain.payment.PaymentRepository;
 import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.domain.product.repository.ProductRepository;
+import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.repository.PointRepository;
-import kr.hhplus.be.server.domain.user.repository.UserRepository;
+import kr.hhplus.be.server.domain.point.PointRepository;
+import kr.hhplus.be.server.domain.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +59,7 @@ public class OrderIntegrationTest {
     }
 
     public Point setUpPoint(long userId, long userPoint) {
-        return pointRepository.save(Point.builder().user(User.builder().id(userId).build()).point(userPoint).build());
+        return pointRepository.save(Point.builder().userId(userId).point(userPoint).build());
     }
 
 
@@ -83,6 +83,12 @@ public class OrderIntegrationTest {
         return couponService.issueCoupon(coupon.getId(), user.getId());
     }
 
+    /**
+     * @return 주문금액
+     */
+    public Long getOrderPrice(Long price, int quantity){
+        return price * quantity;
+    }
 
     /**
      * 주문 및 결제 통합테스트
@@ -100,7 +106,7 @@ public class OrderIntegrationTest {
 
 
         // 상품 가격
-        final int productPrice = 1000;
+        final Long productPrice = 1000L;
         final int productStock = 10;
 
         Product product = setUpProduct(productStock, productPrice);
@@ -111,11 +117,17 @@ public class OrderIntegrationTest {
             new OrderItemCommand(product.getId(), quantity)
         );
 
-        OrderCommand command = new OrderCommand(
-            user.getId(),
-            null,
-            orderItemCommands
-        );
+        // 주문가격
+        Long orderPrice = orderItemCommands.stream().mapToLong((command) -> getOrderPrice(productPrice, command.quantity())).sum();
+
+        OrderCommand.Order command = OrderCommand.Order
+            .builder()
+            .userId(user.getId())
+            .issuedCouponId(null)
+            .products(orderItemCommands)
+            .orderPrice(orderPrice)
+            .build();
+
 
         // when
         OrderInfo order = orderFacade.orderPayment(command);
@@ -137,7 +149,7 @@ public class OrderIntegrationTest {
         setUpPoint(user.getId(), userPoint);
 
         // 상품 가격
-        final int productPrice = 10000;
+        final Long productPrice = 10000L;
         final int productStock = 10;
         Product product = setUpProduct(productStock, productPrice);
 
@@ -147,11 +159,17 @@ public class OrderIntegrationTest {
             new OrderItemCommand(product.getId(), quantity)
         );
 
-        OrderCommand command = new OrderCommand(
-            user.getId(),
-            null,
-            orderItemCommands
-        );
+        // 주문가격
+        Long orderPrice = orderItemCommands.stream().mapToLong((command) -> getOrderPrice(productPrice, command.quantity())).sum();
+
+
+        OrderCommand.Order command = OrderCommand.Order
+            .builder()
+            .userId(user.getId())
+            .issuedCouponId(null)
+            .products(orderItemCommands)
+            .orderPrice(orderPrice)
+            .build();
 
         // when
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> orderFacade.orderPayment(command));
@@ -177,7 +195,7 @@ public class OrderIntegrationTest {
 
 
         // setup 상품 가격 100
-        final int productPrice = 100;
+        final Long productPrice = 100L;
 
         // setup 상품 수량
         final int productStock = 10;
@@ -198,12 +216,17 @@ public class OrderIntegrationTest {
             orderItemCommands.add(new OrderItemCommand(products.get(i).getId(), quantity));
         }
 
+        // 주문가격
+        Long orderPrice = orderItemCommands.stream().mapToLong((command) -> getOrderPrice(productPrice, command.quantity())).sum();
+
         // 주문 커맨드 생성
-        OrderCommand command = new OrderCommand(
-            user.getId(),
-            issuedCoupon.getId(),
-            orderItemCommands
-        );
+        OrderCommand.Order command = OrderCommand.Order
+            .builder()
+            .userId(user.getId())
+            .issuedCouponId(issuedCoupon.getId())
+            .products(orderItemCommands)
+            .orderPrice(orderPrice)
+            .build();
 
         // when
         OrderInfo order = orderFacade.orderPayment(command);
@@ -232,7 +255,7 @@ public class OrderIntegrationTest {
 
 
         // 상품 가격
-        final int productPrice = 100;
+        final Long productPrice = 100L;
         final int productStock = 10;
         Product product = setUpProduct(productStock, productPrice);
 
@@ -243,11 +266,18 @@ public class OrderIntegrationTest {
             new OrderItemCommand(product.getId(), orderQuantity)
         );
 
-        OrderCommand command = new OrderCommand(
-            user.getId(),
-            issuedCoupon.getId(),
-            orderItemCommands
-        );
+        // 주문가격
+        Long orderPrice = orderItemCommands.stream().mapToLong((command) -> getOrderPrice(productPrice, command.quantity())).sum();
+
+
+        OrderCommand.Order command = OrderCommand.Order
+            .builder()
+            .userId(user.getId())
+            .issuedCouponId(issuedCoupon.getId())
+            .products(orderItemCommands)
+            .orderPrice(orderPrice)
+            .build();
+
 
         // when
         OrderInfo order = orderFacade.orderPayment(command);
@@ -256,11 +286,10 @@ public class OrderIntegrationTest {
         // then
         assertEquals(OrderStatus.CONFIRMED, order.status());
         // 쿠폰적용 전 결제금액
-        long totalPrice = orderItemCommands.size() * (productPrice * orderQuantity);
-        assertEquals(payment.getOriginalPrice(), totalPrice);
+        assertEquals(order.orderPrice(), orderPrice);
 
         // 쿠폰적용 후 결제금액
-        long payPrice = totalPrice - (totalPrice * discountRate / 100);
+        long payPrice = orderPrice - (orderPrice * discountRate / 100);
         assertEquals(payment.getPayPrice(), payPrice);
 
     }
@@ -278,7 +307,7 @@ public class OrderIntegrationTest {
         setUpPoint(user.getId(), userPoint);
 
         // 상품 가격
-        final int productPrice = 10000;
+        final Long productPrice = 10000L;
         final int productStock = 10;
         Product product = setUpProduct(productStock, productPrice);
 
@@ -288,11 +317,16 @@ public class OrderIntegrationTest {
             new OrderItemCommand(product.getId(), quantity)
         );
 
-        OrderCommand command = new OrderCommand(
-            user.getId(),
-            null,
-            orderItemCommands
-        );
+        // 주문가격
+        Long orderPrice = orderItemCommands.stream().mapToLong((command) -> getOrderPrice(productPrice, command.quantity())).sum();
+
+        OrderCommand.Order command = OrderCommand.Order
+            .builder()
+            .userId(user.getId())
+            .issuedCouponId(null)
+            .products(orderItemCommands)
+            .orderPrice(orderPrice)
+            .build();
 
         // when
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> orderFacade.orderPayment(command));

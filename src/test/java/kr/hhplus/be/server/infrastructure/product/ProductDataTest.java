@@ -2,7 +2,7 @@ package kr.hhplus.be.server.infrastructure.product;
 
 import static org.junit.jupiter.api.Assertions.*;
 import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.domain.product.repository.ProductRepository;
+import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.infrastructure.jpa.product.ProductJpaRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

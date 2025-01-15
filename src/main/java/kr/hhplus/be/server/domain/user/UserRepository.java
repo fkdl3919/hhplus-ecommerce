@@ -1,7 +1,6 @@
-package kr.hhplus.be.server.domain.user.repository;
+package kr.hhplus.be.server.domain.user;
 
 import java.util.Optional;
-import kr.hhplus.be.server.domain.user.User;
 
 public interface UserRepository {
 

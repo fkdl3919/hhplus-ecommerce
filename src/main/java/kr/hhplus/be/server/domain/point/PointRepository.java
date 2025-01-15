@@ -1,8 +1,6 @@
-package kr.hhplus.be.server.domain.user.repository;
+package kr.hhplus.be.server.domain.point;
 
 import java.util.Optional;
-import kr.hhplus.be.server.domain.point.Point;
-import kr.hhplus.be.server.domain.point.PointHistory;
 
 public interface PointRepository {
 

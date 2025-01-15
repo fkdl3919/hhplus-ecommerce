@@ -2,7 +2,7 @@ package kr.hhplus.be.server.infrastructure.jpa.user;
 
 import java.util.Optional;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.repository.UserRepository;
+import kr.hhplus.be.server.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

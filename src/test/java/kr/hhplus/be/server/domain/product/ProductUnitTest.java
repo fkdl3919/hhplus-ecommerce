@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.Optional;
-import kr.hhplus.be.server.domain.product.repository.ProductRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +36,7 @@ public class ProductUnitTest {
 
         // when
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-           product.decrementStock(requestStock, userPoint);
+           product.decrementStock(requestStock);
         });
 
         // then
@@ -58,7 +57,7 @@ public class ProductUnitTest {
 
         // when
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            product.decrementStock(requestStock, userPoint);
+            product.decrementStock(requestStock);
         });
 
         // then
@@ -80,7 +79,7 @@ public class ProductUnitTest {
 
         // when
         IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            product.decrementStock(requestStock, userPoint);
+            product.decrementStock(requestStock);
         });
 
         // then

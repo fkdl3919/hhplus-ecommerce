@@ -1,8 +1,6 @@
-package kr.hhplus.be.server.domain.order.repository;
+package kr.hhplus.be.server.domain.order;
 
 import java.util.List;
-import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderItem;
 
 public interface OrderRepository {
 

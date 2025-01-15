@@ -5,15 +5,12 @@ import static org.mockito.Mockito.*;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.payment.command.PaymentCommand;
 import kr.hhplus.be.server.domain.payment.enums.PaymentStatus;
-import kr.hhplus.be.server.domain.payment.repository.PaymentRepository;
 import kr.hhplus.be.server.domain.user.User;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,14 +32,19 @@ public class PaymentUnitTest {
         long userId = 1L;
         long orderId = 1L;
         long originalPrice = 1000L;
-        long payPrice = 1000L;
+        int discountRate = 10;
 
-        PaymentCommand command = new PaymentCommand(userId, orderId, originalPrice, payPrice);
+        PaymentCommand.Pay command = PaymentCommand.Pay.builder()
+            .userId(userId)
+            .orderId(orderId)
+            .orderPrice(originalPrice)
+            .discountRate(discountRate)
+            .build();
 
+        long payPrice = originalPrice - (originalPrice * discountRate / 100);
         Payment payment = Payment.builder()
             .user(User.builder().id(userId).build())
             .order(Order.builder().id(orderId).build())
-            .originalPrice(originalPrice)
             .payPrice(payPrice)
             .status(PaymentStatus.CONFIRMED)
             .build();
@@ -64,14 +66,19 @@ public class PaymentUnitTest {
         long userId = 1L;
         long orderId = 1L;
         long originalPrice = 1000L;
-        long payPrice = 1000L;
+        int discountRate = 10;
 
-        PaymentCommand command = new PaymentCommand(userId, orderId, originalPrice, payPrice);
+        PaymentCommand.Pay command = PaymentCommand.Pay.builder()
+            .userId(userId)
+            .orderId(orderId)
+            .orderPrice(originalPrice)
+            .discountRate(discountRate)
+            .build();
 
+        long payPrice = originalPrice - (originalPrice * discountRate / 100);
         Payment payment = Payment.builder()
             .user(User.builder().id(userId).build())
             .order(Order.builder().id(orderId).build())
-            .originalPrice(originalPrice)
             .payPrice(payPrice)
             .status(PaymentStatus.CONFIRMED)
             .build();
@@ -83,7 +90,6 @@ public class PaymentUnitTest {
 
         // then
         assertEquals(payPrice, pay.getPayPrice());
-        assertEquals(originalPrice, pay.getOriginalPrice());
 
     }
 

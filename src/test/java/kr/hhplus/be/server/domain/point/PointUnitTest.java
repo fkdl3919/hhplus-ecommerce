@@ -1,12 +1,14 @@
-package kr.hhplus.be.server.domain.user;
+package kr.hhplus.be.server.domain.point;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import java.util.Optional;
-import kr.hhplus.be.server.domain.point.Point;
-import kr.hhplus.be.server.domain.user.repository.PointRepository;
-import kr.hhplus.be.server.domain.user.repository.UserRepository;
+import kr.hhplus.be.server.domain.point.command.PointCommand;
+import kr.hhplus.be.server.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,14 +20,29 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class PointUnitTest {
 
     @InjectMocks
-    private UserService userService;
-
-    @Mock
-    private UserRepository userRepository;
+    private PointService pointService;
 
     @Mock
     private PointRepository pointRepository;
 
+    @Test
+    @DisplayName("case - 유저의 포인트가 존재하지 않을 경우 포인트가 0인 포인트 객체 반환")
+    public void userPointTest2(){
+        // given
+        long userId = 1L;
+
+        User user = User.builder().id(userId).build();
+
+        when(pointRepository.findPointByUserIdWithLock(user.getId()))
+            .thenReturn(Optional.of(new Point()));
+
+        // when
+        Long point = pointService.userPoint(userId);
+
+        // then
+        assertEquals(0, point);
+
+    }
 
     /**
      * 포인트 충전
@@ -40,7 +57,7 @@ public class PointUnitTest {
         long chargeAmount = 1000L;
 
         Point point = Point.builder()
-            .user(User.builder().id(userId).build())
+            .userId(userId)
             .point(userPoint)
             .build();
 
@@ -64,7 +81,7 @@ public class PointUnitTest {
         long useAmount = 3000L;
 
         Point point = Point.builder()
-            .user(User.builder().id(userId).build())
+            .userId(userId)
             .point(userPoint)
             .build();
 
@@ -85,7 +102,7 @@ public class PointUnitTest {
         long useAmount = 3000L;
 
         Point point = Point.builder()
-            .user(User.builder().id(userId).build())
+            .userId(userId)
             .point(userPoint)
             .build();
 
@@ -105,8 +122,14 @@ public class PointUnitTest {
 
         long chargeAmount = 3000L;
 
+        PointCommand.Charge command = PointCommand.Charge
+            .builder()
+            .userId(userId)
+            .point(chargeAmount)
+            .build();
+
         Point point = Point.builder()
-            .user(User.builder().id(userId).build())
+            .userId(userId)
             .point(userPoint)
             .build();
 
@@ -114,12 +137,10 @@ public class PointUnitTest {
             .id(userId)
             .build();
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(pointRepository.findPointByUserIdWithLock(userId)).thenReturn(Optional.of(point));
 
         // when
-        userService.chargePoint(userId, chargeAmount);
-
+        pointService.chargePoint(command);
 
         // then
         assertEquals(userPoint + chargeAmount, point.getPoint());

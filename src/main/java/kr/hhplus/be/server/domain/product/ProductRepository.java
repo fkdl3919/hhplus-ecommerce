@@ -1,8 +1,7 @@
-package kr.hhplus.be.server.domain.product.repository;
+package kr.hhplus.be.server.domain.product;
 
 import java.util.List;
 import java.util.Optional;
-import kr.hhplus.be.server.domain.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

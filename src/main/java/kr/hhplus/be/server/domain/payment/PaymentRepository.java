@@ -1,6 +1,4 @@
-package kr.hhplus.be.server.domain.payment.repository;
-
-import kr.hhplus.be.server.domain.payment.Payment;
+package kr.hhplus.be.server.domain.payment;
 
 public interface PaymentRepository {
 

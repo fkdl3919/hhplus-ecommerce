@@ -4,13 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItem;
-import kr.hhplus.be.server.domain.order.repository.OrderRepository;
+import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.domain.product.repository.ProductRepository;
+import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.repository.PointRepository;
-import kr.hhplus.be.server.domain.user.repository.UserRepository;
+import kr.hhplus.be.server.domain.point.PointRepository;
+import kr.hhplus.be.server.domain.user.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +39,7 @@ public class ProductIntegrationTest {
     }
 
     public Point setUpPoint(long userId, long userPoint) {
-        return pointRepository.save(Point.builder().user(User.builder().id(userId).build()).point(userPoint).build());
+        return pointRepository.save(Point.builder().userId(userId).point(userPoint).build());
     }
 
 
@@ -49,13 +49,13 @@ public class ProductIntegrationTest {
 
     public Order setUpOrder(long userId, long productId, int orderQuantity) {
         Order order = Order.builder()
-            .user(User.builder().id(userId).build())
+            .userId(userId)
             .build();
         order.confirmOrder();
 
         OrderItem orderItem = OrderItem.builder()
             .order(order)
-            .product(Product.builder().id(productId).build())
+            .productId(productId)
             .quantity(orderQuantity).build();
 
         Order save = orderRepository.save(order);
