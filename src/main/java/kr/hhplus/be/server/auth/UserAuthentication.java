@@ -1,10 +1,7 @@
 package kr.hhplus.be.server.auth;
 
-import java.util.Collection;
 import java.util.List;
-import kr.hhplus.be.server.domain.user.info.UserInfo;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class UserAuthentication extends AbstractAuthenticationToken {

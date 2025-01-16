@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.user;
 
 import jakarta.persistence.EntityNotFoundException;
-import kr.hhplus.be.server.domain.user.info.UserInfo;
+import kr.hhplus.be.server.auth.UserInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

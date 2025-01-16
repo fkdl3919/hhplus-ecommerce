@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.user.info;
+package kr.hhplus.be.server.auth;
 
 import kr.hhplus.be.server.domain.user.User;
 

@@ -26,7 +26,9 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth ->
-                auth.anyRequest().authenticated()
+                auth
+                    .requestMatchers("/api/**").authenticated()
+                    .anyRequest().permitAll()
             )
             // BasicAuthenticationFilter 필터 앞에 사용자 정의 filter 추가
             .addFilterBefore(filter, BasicAuthenticationFilter.class);
