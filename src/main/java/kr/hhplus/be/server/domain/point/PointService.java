@@ -12,15 +12,10 @@ public class PointService {
 
     private final PointRepository pointRepository;
 
-    @Transactional
-    public Point findPoint(long id) {
-        Point point = pointRepository.findPointByUserIdWithLock(id).orElseThrow(() -> new EntityNotFoundException("사용자의 포인트가 존재하지 않습니다."));
-        return point;
-    }
 
     @Transactional
     public Long userPoint(long userId) {
-        Point point = pointRepository.findPointByUserIdWithLock(userId).orElse(null);
+        Point point = pointRepository.findPointByUserIdWithLock(userId).orElseThrow(() -> new EntityNotFoundException("사용자의 포인트가 존재하지 않습니다."));
         return point.getPoint();
     }
 

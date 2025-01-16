@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -39,13 +40,14 @@ public class PointController {
                 )
             ))
     })
-    @GetMapping(value = "{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<PointResponse> point(
 
         @Parameter(description = "유저 userId", example = "11")
-        @PathVariable long userId
+        @RequestParam(name = "userId") String userId
     ) {
-        return ResponseEntity.ok(new PointResponse(userId, pointService.userPoint(userId)));
+        Long l = Long.valueOf(userId);
+        return ResponseEntity.ok(new PointResponse(l, pointService.userPoint(l)));
     }
 
     @Operation(summary = "잔액 충전", description = "사용자 잔액을 충전합니다.")
