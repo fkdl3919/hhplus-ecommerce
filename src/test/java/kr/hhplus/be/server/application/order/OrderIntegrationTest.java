@@ -3,12 +3,17 @@ package kr.hhplus.be.server.application.order;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.order.OrderItem;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
+import kr.hhplus.be.server.domain.order.command.OrderCommand.Order;
 import kr.hhplus.be.server.domain.order.command.OrderCommand.Order.OrderItemCommand;
 import kr.hhplus.be.server.domain.order.enums.OrderStatus;
 import kr.hhplus.be.server.domain.order.info.OrderInfo;
@@ -18,6 +23,7 @@ import kr.hhplus.be.server.domain.payment.PaymentRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.point.Point;
+import kr.hhplus.be.server.domain.product.ProductService;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.point.PointRepository;
 import kr.hhplus.be.server.domain.user.UserRepository;
@@ -52,6 +58,8 @@ public class OrderIntegrationTest {
 
     @Autowired
     private PaymentRepository paymentRepository;
+    @Autowired
+    private ProductService productService;
 
 
     public User setUpUser() {
@@ -89,6 +97,17 @@ public class OrderIntegrationTest {
     public Long getOrderPrice(Long price, int quantity){
         return price * quantity;
     }
+
+    public List<User> setUpUsers(int loop) {
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < loop; i++) {
+            User user = setUpUser();
+            setUpPoint(user.getId(), 10000);
+            users.add(user);
+        }
+        return users;
+    }
+
 
     /**
      * 주문 및 결제 통합테스트
@@ -334,5 +353,66 @@ public class OrderIntegrationTest {
         // then
         assertEquals("잔액이 부족합니다", exception.getMessage());
     }
+
+    /**
+     * 여러명의 유저가 하나의 상품에 n개 주문
+     */
+    @Test
+    @DisplayName("동시성 테스트 - 여러명의 유저가 같은 상품을 주문할 경우 주문 완료 후 상품 재고가 정확한지 테스트")
+    public void orderPaymentConcurrencyTest() throws InterruptedException {
+        // given
+        List<User> users = setUpUsers(1);
+
+
+        final Long productPrice = 100L;
+        final int productStock = 1000;
+        Product product = setUpProduct(productStock, productPrice);
+
+        final int quantity = 10;
+        List<OrderItemCommand> orderItemCommands = List.of(
+            new OrderItemCommand(product.getId(), quantity)
+        );
+
+        List<OrderCommand.Order> orders = new ArrayList<>();
+
+        long orderPrice = orderItemCommands.stream().mapToLong((command) -> getOrderPrice(productPrice, command.quantity())).sum();
+
+        for (User user : users) {
+            orders.add(
+                OrderCommand.Order
+                    .builder()
+                    .userId(user.getId())
+                    .issuedCouponId(null)
+                    .products(orderItemCommands)
+                    .orderPrice(orderPrice)
+                    .build()
+            );
+        }
+
+        int threadCount = orders.size();
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+
+
+        // when
+        for (OrderCommand.Order order : orders) {
+            executorService.submit(() -> {
+                try {
+                    orderFacade.orderPayment(order);
+                } finally {
+                    countDownLatch.countDown();
+                }
+            });
+        }
+
+        countDownLatch.await();
+
+        // then
+        Product byId = productRepository.findById(product.getId()).orElse(null);
+        assertEquals( productStock - (users.size() * quantity), byId.getStock());
+
+
+    }
+
 
 }
