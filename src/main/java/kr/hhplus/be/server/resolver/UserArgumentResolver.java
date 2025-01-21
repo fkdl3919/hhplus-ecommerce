@@ -2,7 +2,7 @@ package kr.hhplus.be.server.resolver;
 
 import kr.hhplus.be.server.auth.UserProvider;
 import kr.hhplus.be.server.auth.UserAuthentication;
-import kr.hhplus.be.server.auth.UserInfo;
+import kr.hhplus.be.server.auth.AuthUser;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +28,7 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         // 메소드 파라미터에 미리 정의한 어노테이션이 존재하는지 확인
         boolean isResolver = parameter.hasParameterAnnotation(UserProvider.class);
         // 해당 파라미터의 타입 확인
-        boolean isAuthUser = UserInfo.class.equals(parameter.getParameterType());
+        boolean isAuthUser = AuthUser.class.equals(parameter.getParameterType());
         return isResolver && isAuthUser;
     }
 

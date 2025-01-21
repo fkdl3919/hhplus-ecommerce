@@ -7,11 +7,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import kr.hhplus.be.server.auth.UserInfo;
+import kr.hhplus.be.server.auth.AuthUser;
 import kr.hhplus.be.server.auth.UserProvider;
-import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponService;
-import kr.hhplus.be.server.interfaces.api.product.ProductResponse;
 import kr.hhplus.be.server.interfaces.common.PagingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
@@ -23,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,7 +41,7 @@ public class CouponController {
         @PathVariable long id,
 
         @Parameter(description = "유저 userId", example = "1", name = "userId")
-        @UserProvider UserInfo authUser) {
+        @UserProvider AuthUser authUser) {
 
         couponService.issueCoupon(id, authUser.id());
         return  ResponseEntity.ok().build();
@@ -74,7 +71,7 @@ public class CouponController {
     @PageableAsQueryParam
     public ResponseEntity<PagingResponse> list(
         @Parameter(description = "유저 userId", example = "1", name = "userId")
-        @UserProvider UserInfo authUser,
+        @UserProvider AuthUser authUser,
 
         @ParameterObject
         @PageableDefault Pageable pageable

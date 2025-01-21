@@ -20,13 +20,13 @@ public class PointService {
     }
 
     @Transactional
-    public void chargePoint(PointCommand.Charge command) {
+    public PointHistory chargePoint(PointCommand.Charge command) {
         Point point = pointRepository.findPointByUserIdWithLock(command.userId()).orElseThrow(() -> new EntityNotFoundException("사용자의 포인트가 존재하지 않습니다."));
 
         // point 충전 후 history 반환
         PointHistory pointHistory = point.charge(command.point());
 
-        pointRepository.saveHistory(pointHistory);
+        return pointRepository.saveHistory(pointHistory);
     }
 
     @Transactional

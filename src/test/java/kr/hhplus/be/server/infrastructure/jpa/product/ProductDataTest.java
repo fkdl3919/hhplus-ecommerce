@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.product;
+package kr.hhplus.be.server.infrastructure.jpa.product;
 
 import static org.junit.jupiter.api.Assertions.*;
 import kr.hhplus.be.server.domain.product.Product;
