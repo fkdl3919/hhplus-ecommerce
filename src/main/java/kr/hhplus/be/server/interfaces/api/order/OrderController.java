@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kr.hhplus.be.server.application.order.OrderFacade;
+import kr.hhplus.be.server.auth.UserInfo;
+import kr.hhplus.be.server.auth.UserProvider;
 import kr.hhplus.be.server.interfaces.common.PagingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -40,9 +42,11 @@ public class OrderController {
     })
     @PostMapping
     public ResponseEntity<OrderResponse> order(
-        @RequestBody OrderRequest orderRequest
+        @RequestBody OrderRequest orderRequest,
+
+        @UserProvider UserInfo authUser
     ){
-        orderFacade.orderPayment(orderRequest.toCommand());
+        orderFacade.orderPayment(OrderRequest.toOrder(orderRequest, authUser));
         return ResponseEntity.ok().build();
     }
 

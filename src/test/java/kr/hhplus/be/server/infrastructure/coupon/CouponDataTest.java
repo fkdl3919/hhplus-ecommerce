@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
-import kr.hhplus.be.server.domain.coupon.repository.CouponRepository;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.infrastructure.jpa.coupon.CouponJpaRepository;
 import kr.hhplus.be.server.infrastructure.jpa.coupon.issuedcoupon.IssuedCouponJpaRepository;

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
-import kr.hhplus.be.server.domain.coupon.repository.CouponRepository;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.infrastructure.jpa.coupon.issuedcoupon.IssuedCouponJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,6 +19,8 @@ import org.springframework.stereotype.Repository;
 public class CouponRepositoryImpl implements CouponRepository {
 
     private final CouponJpaRepository couponJpaRepository;
+    private final IssuedCouponJpaRepository issuedCouponJpaRepository;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Optional<Coupon> findByIdWithLock(long id) {
@@ -26,12 +28,10 @@ public class CouponRepositoryImpl implements CouponRepository {
     }
 
     @Override
-    public Optional<Coupon> findById(long couponId) {
+    public Optional<Coupon> findById(Long couponId) {
         return couponJpaRepository.findById(couponId);
     }
 
-    private final IssuedCouponJpaRepository issuedCouponJpaRepository;
-    private final JPAQueryFactory queryFactory;
 
     @Override
     public IssuedCoupon saveIssuedCoupon(IssuedCoupon issuedCoupon) {
@@ -57,7 +57,8 @@ public class CouponRepositoryImpl implements CouponRepository {
     }
 
     @Override
-    public Optional<IssuedCoupon> findIssuedCouponById(long issuedCouponId) {
+    public Optional<IssuedCoupon> findIssuedCouponById(Long issuedCouponId) {
+        if (issuedCouponId == null) return Optional.empty();
         return issuedCouponJpaRepository.findById(issuedCouponId);
     }
 

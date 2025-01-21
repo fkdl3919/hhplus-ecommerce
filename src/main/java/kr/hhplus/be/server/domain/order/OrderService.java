@@ -2,13 +2,9 @@ package kr.hhplus.be.server.domain.order;
 
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
-import kr.hhplus.be.server.domain.order.command.OrderCommand.OrderItemCommand;
+import kr.hhplus.be.server.domain.order.command.OrderCommand.Order.OrderItemCommand;
 import kr.hhplus.be.server.domain.order.enums.OrderStatus;
-import kr.hhplus.be.server.domain.order.repository.OrderRepository;
-import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,15 +18,14 @@ public class OrderService {
 
     // 주문 생성
     @Transactional
-    public Order order(OrderCommand orderCommand) {
+    public Order order(OrderCommand.Order command) {
+
         Order order = Order.builder()
-            .user(User.builder().id(orderCommand.userId()).build())
+            .userId(command.userId())
+            .issuedCouponId(command.issuedCouponId())
+            .orderPrice(command.orderPrice())
             .status(OrderStatus.PENDING)
             .build();
-
-        if(orderCommand.issuedCouponId() != null){
-            order.setIssuedCoupon(IssuedCoupon.builder().id(orderCommand.issuedCouponId()).build());
-        }
 
         Order save = orderRepository.save(order);
 
@@ -38,13 +33,13 @@ public class OrderService {
             throw new EntityNotFoundException("주문이 생성되지 않았습니다.");
         }
 
-        List<OrderItemCommand> products = orderCommand.products();
+        List<OrderItemCommand> products = command.products();
 
         // 주문 item별로 생성
         products.stream().forEach((orderItem) -> {
             OrderItem build = OrderItem.builder()
                 .order(order)
-                .product(Product.builder().id(orderItem.productId()).build())
+                .productId(orderItem.productId())
                 .quantity(orderItem.quantity())
                 .build();
             orderRepository.saveOrderItem(build);

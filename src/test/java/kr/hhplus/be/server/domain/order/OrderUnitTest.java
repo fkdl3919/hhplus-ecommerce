@@ -5,20 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import kr.hhplus.be.server.domain.coupon.IssuedCoupon;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
-import kr.hhplus.be.server.domain.order.command.OrderCommand.OrderItemCommand;
+import kr.hhplus.be.server.domain.order.command.OrderCommand.Order.OrderItemCommand;
 import kr.hhplus.be.server.domain.order.enums.OrderStatus;
-import kr.hhplus.be.server.domain.order.repository.OrderRepository;
-import kr.hhplus.be.server.domain.user.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.testcontainers.shaded.com.google.common.collect.Lists;
 
 @ExtendWith(MockitoExtension.class)
 public class OrderUnitTest {
@@ -40,21 +35,23 @@ public class OrderUnitTest {
         long issuedCouponId = 1L;
 
         // 주문생성 command
-        OrderCommand orderCommand = new OrderCommand(
-            userId,
-            issuedCouponId,
-            List.of(
-                new OrderItemCommand(1L, 10),
-                new OrderItemCommand(2L, 20),
-                new OrderItemCommand(3L, 30)
-            )
-        );
+        OrderCommand.Order orderCommand = OrderCommand.Order.builder()
+            .userId(userId)
+            .issuedCouponId(issuedCouponId)
+            .products(
+                List.of(
+                    new OrderItemCommand(1L, 10),
+                    new OrderItemCommand(2L, 20),
+                    new OrderItemCommand(3L, 30)
+                )
+            ).build();
+
 
         // 주문
         Order order = Order.builder()
-            .user(User.builder().id(orderCommand.userId()).build())
+            .userId(userId)
             .status(OrderStatus.PENDING)
-            .issuedCoupon(IssuedCoupon.builder().id(orderCommand.issuedCouponId()).build())
+            .issuedCouponId(orderCommand.issuedCouponId())
             .build();
 
         when(orderRepository.save(any())).thenReturn(order);
@@ -76,22 +73,24 @@ public class OrderUnitTest {
         long orderId = 1L;
 
         // 주문생성 command
-        OrderCommand orderCommand = new OrderCommand(
-            userId,
-            issuedCouponId,
-            List.of(
-                new OrderItemCommand(1L, 10),
-                new OrderItemCommand(2L, 20),
-                new OrderItemCommand(3L, 30)
-            )
-        );
+        OrderCommand.Order orderCommand = OrderCommand.Order.builder()
+            .userId(userId)
+            .issuedCouponId(issuedCouponId)
+            .products(
+                List.of(
+                    new OrderItemCommand(1L, 10),
+                    new OrderItemCommand(2L, 20),
+                    new OrderItemCommand(3L, 30)
+                )
+            ).build();
+
 
         // 주문
         Order order = Order.builder()
             .id(orderId)
-            .user(User.builder().id(orderCommand.userId()).build())
+            .userId(userId)
             .status(OrderStatus.PENDING)
-            .issuedCoupon(IssuedCoupon.builder().id(orderCommand.issuedCouponId()).build())
+            .issuedCouponId(orderCommand.issuedCouponId())
             .build();
 
         when(orderRepository.save(any())).thenReturn(order);

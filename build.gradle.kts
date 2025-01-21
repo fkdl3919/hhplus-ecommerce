@@ -34,6 +34,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 
 	compileOnly ("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
@@ -47,6 +48,8 @@ dependencies {
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+	implementation("org.springframework.security:spring-security-test")
+
 
 	// api docs
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")

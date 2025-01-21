@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.infrastructure.jpa.product;
 
 import static kr.hhplus.be.server.domain.product.QProduct.*;
-import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -11,15 +10,11 @@ import kr.hhplus.be.server.domain.order.QOrder;
 import kr.hhplus.be.server.domain.order.QOrderItem;
 import kr.hhplus.be.server.domain.order.enums.OrderStatus;
 import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.domain.product.QProduct;
-import kr.hhplus.be.server.domain.product.repository.ProductRepository;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import kr.hhplus.be.server.domain.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -30,7 +25,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     private final ProductJpaRepository productJpaRepository;
 
     @Override
-    public Page<Product> selectProductList(Pageable pageable) {
+    public Page<Product> selectProductPaging(Pageable pageable) {
         List<Product> products = queryFactory
             .selectFrom(product)
             .orderBy(product.createdAt.desc())
@@ -46,6 +41,11 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
+    public Optional<Product> findById(Long id) {
+        return productJpaRepository.findById(id);
+    }
+
+    @Override
     public Optional<Product> findProductWithLock(Long id) {
         return Optional.of(productJpaRepository.findProductWithLock(id));
     }
@@ -56,13 +56,13 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public List<Product> selectTopSellingProductList() {
+    public List<Product> selectTopSellingProducts() {
 
         List<Product> products = queryFactory
             .selectFrom(product)
             .join(QOrderItem.orderItem)
                 .on(
-                    QOrderItem.orderItem.product.eq(product)
+                    QOrderItem.orderItem.productId.eq(product.id)
                 )
             .join(QOrder.order)
                 .on(

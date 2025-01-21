@@ -5,9 +5,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import kr.hhplus.be.server.domain.coupon.info.IssuedCouponInfo;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
-import kr.hhplus.be.server.domain.coupon.repository.CouponRepository;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.domain.user.repository.UserRepository;
+import kr.hhplus.be.server.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -58,15 +57,17 @@ public class CouponService {
         return IssuedCouponInfo.toPaging(couponRepository.selectIssuedCouponList(userId, pageable));
     }
 
-    /**
-     * 발급쿠폰 유효기간 검증 후 쿠폰의 할인율 반환
-     * @param issuedCouponId
-     * @return
-     */
-    public long getDiscountRate(Long issuedCouponId) {
-        if(issuedCouponId == null) return 0;
+    public Coupon getCoupon(Long issuedCouponId) {
+        // 쿠폰없다고 주문안되는게 아님
+        if(issuedCouponId == null) return new Coupon();
         IssuedCoupon issuedCoupon = couponRepository.findIssuedCouponById(issuedCouponId).orElseThrow(() -> new EntityNotFoundException("보유쿠폰이 존재하지 않습니다."));
         issuedCoupon.validCouponExpired();
-        return issuedCoupon.getCoupon().getDiscountRate();
+        return issuedCoupon != null ? issuedCoupon.getCoupon() : new Coupon();
+    }
+
+    public void useCoupon(Long issuedCouponId) {
+        if(issuedCouponId == null) return;
+        IssuedCoupon issuedCoupon = couponRepository.findIssuedCouponById(issuedCouponId).orElseThrow(() -> new EntityNotFoundException("보유쿠폰이 존재하지 않습니다."));
+        issuedCoupon.use();
     }
 }

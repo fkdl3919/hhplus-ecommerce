@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import kr.hhplus.be.server.auth.UserInfo;
+import kr.hhplus.be.server.auth.UserProvider;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.CouponService;
 import kr.hhplus.be.server.interfaces.api.product.ProductResponse;
@@ -38,13 +40,13 @@ public class CouponController {
     })
     @PostMapping("issue/{id}")
     public ResponseEntity issueCoupon(
-        @Parameter(description = "쿠폰 id", example = "1")
+        @Parameter(description = "쿠폰 userId", example = "1", name = "userId")
         @PathVariable long id,
 
-        @Parameter(description = "유저 id", example = "1")
-        @RequestBody long userId) {
+        @Parameter(description = "유저 userId", example = "1", name = "userId")
+        @UserProvider UserInfo authUser) {
 
-        couponService.issueCoupon(id, userId);
+        couponService.issueCoupon(id, authUser.id());
         return  ResponseEntity.ok().build();
     }
 
@@ -58,7 +60,7 @@ public class CouponController {
                     value = """
                             {
                                 "item": [
-                                    { "id": 1, "userId": 1, "couponId": 1, "discountRate": 10, "status": "NOT_USED" },
+                                    { "userId": 1, "userId": 1, "couponId": 1, "discountRate": 10, "status": "NOT_USED" },
                                 ],
                                 "totalCount": 100,
                                 "totalPages": 10
@@ -68,16 +70,16 @@ public class CouponController {
             )
         )
     })
-    @GetMapping(value = "/list/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/issued/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PageableAsQueryParam
     public ResponseEntity<PagingResponse> list(
-        @Parameter(description = "유저 id", example = "1")
-        @RequestBody long userId,
+        @Parameter(description = "유저 userId", example = "1", name = "userId")
+        @UserProvider UserInfo authUser,
 
         @ParameterObject
         @PageableDefault Pageable pageable
     ) {
-        return ResponseEntity.ok(PagingResponse.from(couponService.selectIssuedCouponList(userId, pageable)));
+        return ResponseEntity.ok(PagingResponse.from(couponService.selectIssuedCouponList(authUser.id(), pageable)));
     }
 
 }

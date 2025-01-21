@@ -33,7 +33,7 @@ public class Product extends Base {
      * 상품 갯수 차감
      *
      */
-    public void decrementProductStock(int requestStock, Long userPoint) {
+    public void decrementStock(int requestStock) {
         if(stock == null || stock <= 0) throw new IllegalArgumentException("상품이 품절되었습니다.");
 
         if(requestStock > stock) throw new IllegalArgumentException("요청하신 수량이 상품 재고수량을 초과하였습니다.");

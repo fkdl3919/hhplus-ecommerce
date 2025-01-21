@@ -9,11 +9,12 @@ public record OrderInfo(
     Long id,
     Long userId,
     Long issuedCouponId,
-    OrderStatus status
+    OrderStatus status,
+    Long orderPrice
 ) {
 
     public static OrderInfo of(Order order) {
-        return new OrderInfo(order.getId(), order.getUser().getId(), order.getIssuedCoupon() != null ? order.getIssuedCoupon().getId() : null, order.getStatus());
+        return new OrderInfo(order.getId(), order.getUserId(), order.getIssuedCouponId(), order.getStatus(), order.getOrderPrice());
     }
 
 }
