@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kr.hhplus.be.server.auth.UserProvider;
-import kr.hhplus.be.server.auth.UserInfo;
+import kr.hhplus.be.server.auth.AuthUser;
 import kr.hhplus.be.server.domain.point.PointService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -45,7 +45,7 @@ public class PointController {
     public ResponseEntity<PointResponse> point(
 
         @Parameter(description = "유저 userId", example = "11", name = "userId")
-        @UserProvider UserInfo authUser
+        @UserProvider AuthUser authUser
     ) {
         return ResponseEntity.ok(new PointResponse(authUser.id(), pointService.userPoint(authUser.id())));
     }

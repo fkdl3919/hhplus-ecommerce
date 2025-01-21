@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kr.hhplus.be.server.application.order.OrderFacade;
-import kr.hhplus.be.server.auth.UserInfo;
+import kr.hhplus.be.server.auth.AuthUser;
 import kr.hhplus.be.server.auth.UserProvider;
 import kr.hhplus.be.server.interfaces.common.PagingResponse;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class OrderController {
     public ResponseEntity<OrderResponse> order(
         @RequestBody OrderRequest orderRequest,
 
-        @UserProvider UserInfo authUser
+        @UserProvider AuthUser authUser
     ){
         orderFacade.orderPayment(OrderRequest.toOrder(orderRequest, authUser));
         return ResponseEntity.ok().build();

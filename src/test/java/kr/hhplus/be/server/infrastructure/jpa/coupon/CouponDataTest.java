@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.infrastructure.coupon;
+package kr.hhplus.be.server.infrastructure.jpa.coupon;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.LocalDate;
