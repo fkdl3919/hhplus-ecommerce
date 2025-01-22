@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface PointRepository {
 
-    Optional<Point> findPointByUserIdWithLock(long userId);
+    Optional<Point> findPointByUserWithVersion(long userId);
 
 
     PointHistory saveHistory(PointHistory pointHistory);
