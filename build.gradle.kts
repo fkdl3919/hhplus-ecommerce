@@ -52,6 +52,8 @@ dependencies {
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("org.springframework.security:spring-security-test")
+	testCompileOnly ("org.projectlombok:lombok")
+	testAnnotationProcessor("org.projectlombok:lombok")
 
 
 	// api docs

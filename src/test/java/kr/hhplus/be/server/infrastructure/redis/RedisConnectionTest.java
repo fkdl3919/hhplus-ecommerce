@@ -14,8 +14,9 @@ public class RedisConnectionTest {
     private RedissonClient redissonClient;
 
     @Test
-    public void test() {
-        assert redissonClient.getConfig() != null;
+    void givenRedisContainerConfiguredWithDynamicProperties_whenCheckingRunningStatus_thenStatusIsRunning() {
+        Assertions.assertTrue(redissonClient.getBucket("test").trySet("test"));
+
     }
 
 }

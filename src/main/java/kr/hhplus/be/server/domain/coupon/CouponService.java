@@ -7,6 +7,7 @@ import kr.hhplus.be.server.domain.coupon.info.IssuedCouponInfo;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
+import kr.hhplus.be.server.infrastructure.redis.DistributeLock;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +21,8 @@ public class CouponService {
     private final CouponRepository couponRepository;
     private final UserRepository userRepository;
 
-    @Transactional
+    // LOCK:issueCoupon
+    @DistributeLock(key = "issueCoupon")
     public IssuedCoupon issueCoupon(long couponId, long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
 

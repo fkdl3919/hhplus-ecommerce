@@ -15,14 +15,18 @@ import kr.hhplus.be.server.domain.point.PointRepository;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.domain.user.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.org.checkerframework.checker.units.qual.A;
 
+@Slf4j
 @SpringBootTest
 public class CouponIntegrationTest {
 
@@ -49,7 +53,7 @@ public class CouponIntegrationTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 200; i++) {
             setUpUser();
         }
     }
@@ -64,8 +68,10 @@ public class CouponIntegrationTest {
         List<User> users = userRepository.findAll();
 
         // 쿠폰수량설정
-        int initialStock = 100;
+        int initialStock = 1000;
         Coupon coupon = setUpCoupon(initialStock);
+
+        log.info(String.valueOf(coupon.getStock()));
 
         int threadCount = users.size();
 
@@ -86,7 +92,8 @@ public class CouponIntegrationTest {
 
         // then
         Coupon resultCoupon = couponService.getCoupon(coupon.getId());
-        assertEquals(initialStock - users.size(), resultCoupon.getStock());
+        int expected = initialStock - users.size();
+        assertEquals(expected < 0 ? 0 : expected, resultCoupon.getStock());
 
     }
 
