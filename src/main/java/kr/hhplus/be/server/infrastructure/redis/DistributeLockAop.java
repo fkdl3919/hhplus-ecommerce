@@ -33,10 +33,11 @@ public class DistributeLockAop {
     public Object lock(final ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
+        String couponId = joinPoint.getArgs()[0].toString();
         DistributeLock distributedLock = method.getAnnotation(DistributeLock.class);
 
         AtomicReference<Object> result = new AtomicReference<>();
-        String key = REDISSON_LOCK_PREFIX + distributedLock.key();
+        String key = REDISSON_LOCK_PREFIX + distributedLock.key() + couponId;
         RLock rLock = redissonClient.getLock(key);  // (1)
 
         try {
