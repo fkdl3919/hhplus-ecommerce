@@ -37,7 +37,7 @@ public class DistributeLockAop {
         DistributeLock distributedLock = method.getAnnotation(DistributeLock.class);
 
         AtomicReference<Object> result = new AtomicReference<>();
-        String key = REDISSON_LOCK_PREFIX + distributedLock.key() + couponId;
+        String key = REDISSON_LOCK_PREFIX + distributedLock.key() + ":" + couponId;
         RLock rLock = redissonClient.getLock(key);  // (1)
 
         try {
