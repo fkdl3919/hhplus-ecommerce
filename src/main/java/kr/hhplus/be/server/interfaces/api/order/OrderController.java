@@ -9,7 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kr.hhplus.be.server.application.order.OrderFacade;
 import kr.hhplus.be.server.auth.AuthUser;
 import kr.hhplus.be.server.auth.UserProvider;
-import kr.hhplus.be.server.interfaces.common.PagingResponse;
+import kr.hhplus.be.server.interfaces.api.common.PagingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

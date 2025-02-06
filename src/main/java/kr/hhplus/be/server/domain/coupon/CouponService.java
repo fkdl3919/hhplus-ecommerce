@@ -3,11 +3,12 @@ package kr.hhplus.be.server.domain.coupon;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import kr.hhplus.be.server.domain.coupon.info.IssuedCouponInfo;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
+import kr.hhplus.be.server.domain.coupon.info.IssuedCouponInfo;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.infrastructure.redis.DistributeLock;
+import kr.hhplus.be.server.infrastructure.redis.RedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ public class CouponService {
 
     private final CouponRepository couponRepository;
     private final UserRepository userRepository;
+    private final RedisRepository redisRepository;
 
     // LOCK:issueCoupon
     @DistributeLock(key = "issueCoupon")
@@ -51,6 +53,25 @@ public class CouponService {
 
         return issuedCoupon;
 
+    }
+
+    @Transactional
+    public void requestCoupon(long couponId, long userId) {
+        final String COUPON_PREFIX = "coupon:";
+        final String ISSUED_COUPON_PREFIX = "issuedCoupon:";
+
+        redisRepository.getSetValue(ISSUED_COUPON_PREFIX + couponId, String.valueOf(userId)).ifPresent(s -> {
+            throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
+        });
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
+
+        Coupon coupon = couponRepository.findById(couponId).orElseThrow(() -> new EntityNotFoundException("쿠폰이 존재하지 않습니다."));
+
+        // 쿠폰 수량체크
+        coupon.validAvailable();
+
+        redisRepository.setSortedSet(COUPON_PREFIX + couponId, String.valueOf(userId));
     }
 
     public PageImpl<IssuedCouponInfo> selectIssuedCouponList(long userId, Pageable pageable) {

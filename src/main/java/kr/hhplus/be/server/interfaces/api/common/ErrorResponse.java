@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.common;
+package kr.hhplus.be.server.interfaces.api.common;
 
 public record ErrorResponse(
     String errMsg

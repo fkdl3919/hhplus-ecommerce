@@ -40,7 +40,7 @@ public class CouponUnitTest {
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         // when
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> couponService.issueCoupon(couponId, userId));
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> couponService.requestCoupon(couponId, userId));
 
         // then
         assertEquals("유저가 존재하지 않습니다.", exception.getMessage());
@@ -58,7 +58,7 @@ public class CouponUnitTest {
         when(couponRepository.findByIdWithLock(couponId)).thenReturn(Optional.empty());
 
         // when
-        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> couponService.issueCoupon(couponId, userId));
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> couponService.requestCoupon(couponId, userId));
 
         // then
         assertEquals("쿠폰이 존재하지 않습니다.", exception.getMessage());
@@ -79,7 +79,7 @@ public class CouponUnitTest {
         when(couponRepository.findByIdWithLock(couponId)).thenReturn(Optional.of(coupon));
 
         // when
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> couponService.issueCoupon(couponId, userId));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> couponService.requestCoupon(couponId, userId));
 
         // then
         assertEquals("쿠폰이 모두 소진되었습니다.", exception.getMessage());
@@ -108,7 +108,7 @@ public class CouponUnitTest {
         when(couponRepository.saveIssuedCoupon(any())).thenReturn(issuedCoupon);
 
         // when
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> couponService.issueCoupon(couponId, userId));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> couponService.requestCoupon(couponId, userId));
 
         // then
         assertEquals("쿠폰을 입력하는 도중 오류가 발생하였습니다.", exception.getMessage());

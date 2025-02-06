@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.interfaces.common;
+package kr.hhplus.be.server.interfaces.api.common;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;

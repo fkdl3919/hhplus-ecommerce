@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class CouponRepositoryImpl implements CouponRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
+    @Transactional
     public Optional<Coupon> findByIdWithLock(long id) {
         return Optional.of(couponJpaRepository.findByIdWithLock(id));
     }
