@@ -15,13 +15,13 @@ public class PointService {
 
     @Transactional
     public Long userPoint(long userId) {
-        Point point = pointRepository.findPointByUserIdWithLock(userId).orElseThrow(() -> new EntityNotFoundException("사용자의 포인트가 존재하지 않습니다."));
+        Point point = pointRepository.findPointByUserWithVersion(userId).orElseThrow(() -> new EntityNotFoundException("사용자의 포인트가 존재하지 않습니다."));
         return point.getPoint();
     }
 
     @Transactional
     public PointHistory chargePoint(PointCommand.Charge command) {
-        Point point = pointRepository.findPointByUserIdWithLock(command.userId()).orElseThrow(() -> new EntityNotFoundException("사용자의 포인트가 존재하지 않습니다."));
+        Point point = pointRepository.findPointByUserWithVersion(command.userId()).orElseThrow(() -> new EntityNotFoundException("사용자의 포인트가 존재하지 않습니다."));
 
         // point 충전 후 history 반환
         PointHistory pointHistory = point.charge(command.point());
@@ -31,7 +31,7 @@ public class PointService {
 
     @Transactional
     public Point use(PointCommand.Use command) {
-        Point point = pointRepository.findPointByUserIdWithLock(command.userId()).orElseThrow(() -> new EntityNotFoundException("사용자의 포인트가 존재하지 않습니다."));
+        Point point = pointRepository.findPointByUserWithVersion(command.userId()).orElseThrow(() -> new EntityNotFoundException("사용자의 포인트가 존재하지 않습니다."));
 
         // point 사용 후 history 반환
         PointHistory pointHistory = point.use(command.point());

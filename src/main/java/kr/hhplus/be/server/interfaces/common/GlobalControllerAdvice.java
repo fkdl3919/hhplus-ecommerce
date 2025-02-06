@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -29,6 +30,12 @@ public class GlobalControllerAdvice {
         log.error(e.getMessage(), e);
         // 클라이언트가 요청한 리소스에 대한 접근권한이 없음을 알림
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("사용자 인증정보가 올바르지 않습니다."));
+    }
+
+    @ExceptionHandler(value = ObjectOptimisticLockingFailureException.class)
+    public ResponseEntity handleObjectOptimisticLockingFailureException(ObjectOptimisticLockingFailureException e) {
+        log.error(e.getMessage(), e);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ErrorResponse("다시 시도해 주세요."));
     }
 
 }

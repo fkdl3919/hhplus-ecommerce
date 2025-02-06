@@ -7,6 +7,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
 import kr.hhplus.be.server.domain.point.Point;
 import kr.hhplus.be.server.domain.point.PointRepository;
 import kr.hhplus.be.server.domain.point.PointService;
@@ -17,7 +18,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Profile;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.test.context.ActiveProfiles;
 
+@ActiveProfiles("test")
 @SpringBootTest
 public class PointIntegrationTest {
 
@@ -35,10 +40,10 @@ public class PointIntegrationTest {
 
 
     @Test
-    @DisplayName("동시성 - 다수 요청 포인트 충전")
+    @DisplayName("동시성 - 낙관적 락 적용 다수 요청 포인트 충전 시 ObjectOptimisticLockingFailureException 발생")
     public void test() throws Exception {
         // given
-        int threadCount = 2;
+        int threadCount = 10;
 
         ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
         CountDownLatch countDownLatch = new CountDownLatch(threadCount);
@@ -52,25 +57,26 @@ public class PointIntegrationTest {
             .point(chargePoint)
             .build();
 
-
+        AtomicReference<Exception> e = new AtomicReference<>();
         // when
         for (int i = 0; i < threadCount; i++) {
-            try {
-                executorService.submit(
-                    () -> {
-                        pointService.chargePoint(charge);
+            executorService.submit(
+                () -> {
+                    try {
+                        ObjectOptimisticLockingFailureException objFailure = assertThrows(ObjectOptimisticLockingFailureException.class, () -> pointService.chargePoint(charge));
+                        e.set(objFailure);
+                    }finally{
                         countDownLatch.countDown();
                     }
-                );
-            } finally {
-            }
+
+                }
+            );
         }
 
         countDownLatch.await();
 
         // then
-        Long point = pointService.userPoint(userId);
-        assertEquals(threadCount * chargePoint, point);
+        assertTrue(e.get() instanceof ObjectOptimisticLockingFailureException);
     }
 
 }

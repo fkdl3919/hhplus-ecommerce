@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import kr.hhplus.be.server.domain.common.Base;
 import kr.hhplus.be.server.domain.point.enums.PointTransactionType;
 import kr.hhplus.be.server.domain.user.User;
@@ -29,6 +30,9 @@ public class Point extends Base {
 
     @Builder.Default()
     private Long point = 0L;
+
+    @Version
+    private Long version;
 
     public PointHistory charge(Long amount) {
         this.point += amount;

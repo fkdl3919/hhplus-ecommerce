@@ -42,13 +42,18 @@ dependencies {
     // DB
 	runtimeOnly("com.mysql:mysql-connector-j")
 
-    // Test
+	// redis
+	implementation("org.redisson:redisson-spring-boot-starter:3.41.0")
+
+	// Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:mysql")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	implementation("org.springframework.security:spring-security-test")
+	testCompileOnly ("org.projectlombok:lombok")
+	testAnnotationProcessor("org.projectlombok:lombok")
 
 
 	// api docs

@@ -33,7 +33,7 @@ public class PointUnitTest {
 
         User user = User.builder().id(userId).build();
 
-        when(pointRepository.findPointByUserIdWithLock(user.getId()))
+        when(pointRepository.findPointByUserWithVersion(user.getId()))
             .thenReturn(Optional.of(new Point()));
 
         // when
@@ -137,7 +137,7 @@ public class PointUnitTest {
             .id(userId)
             .build();
 
-        when(pointRepository.findPointByUserIdWithLock(userId)).thenReturn(Optional.of(point));
+        when(pointRepository.findPointByUserWithVersion(userId)).thenReturn(Optional.of(point));
 
         // when
         pointService.chargePoint(command);
