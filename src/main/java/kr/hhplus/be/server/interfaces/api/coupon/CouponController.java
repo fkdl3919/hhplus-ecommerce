@@ -31,19 +31,19 @@ public class CouponController {
 
     private final CouponService couponService;
 
-    @Operation(summary = "쿠폰 발급", description = "선착순으로 쿠폰을 발급받습니다.")
+    @Operation(summary = "쿠폰 발급", description = "선착순으로 쿠폰을 요청합니다.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "쿠폰 발급 성공")
+        @ApiResponse(responseCode = "200", description = "쿠폰 요청 성공")
     })
-    @PostMapping("issue/{id}")
-    public ResponseEntity issueCoupon(
+    @PostMapping("request/{id}")
+    public ResponseEntity requestCoupon(
         @Parameter(description = "쿠폰 userId", example = "1", name = "userId")
         @PathVariable long id,
 
         @Parameter(description = "유저 userId", example = "1", name = "userId")
         @UserProvider AuthUser authUser) {
 
-        couponService.issueCoupon(id, authUser.id());
+        couponService.requestCoupon(id, authUser.id());
         return  ResponseEntity.ok().build();
     }
 
