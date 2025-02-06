@@ -10,7 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import kr.hhplus.be.server.auth.AuthUser;
 import kr.hhplus.be.server.auth.UserProvider;
 import kr.hhplus.be.server.domain.coupon.CouponService;
-import kr.hhplus.be.server.interfaces.common.PagingResponse;
+import kr.hhplus.be.server.interfaces.api.common.PagingResponse;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
