@@ -38,11 +38,6 @@ public class ProductIntegrationTest {
         return userRepository.save(User.builder().build());
     }
 
-    public Point setUpPoint(long userId, long userPoint) {
-        return pointRepository.save(Point.builder().userId(userId).point(userPoint).build());
-    }
-
-
     public Product setUpProduct(int stock, long price, String name) {
         return productRepository.save(Product.builder().price(price).name(name).stock(stock).build());
     }

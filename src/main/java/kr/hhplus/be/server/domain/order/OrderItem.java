@@ -6,8 +6,10 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import kr.hhplus.be.server.domain.common.Base;
 import kr.hhplus.be.server.domain.product.Product;
 import lombok.AllArgsConstructor;
@@ -22,6 +24,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(indexes = {
+    @Index(name = "idx_order_id_product_id_quantity", columnList = "order_id, product_id, quantity")
+})
 public class OrderItem extends Base {
 
     @Id

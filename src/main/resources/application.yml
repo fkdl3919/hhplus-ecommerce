@@ -14,7 +14,7 @@ spring:
   jpa:
     open-in-view: false
     generate-ddl: false
-    show-sql: true
+    show-sql: false
     properties:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
@@ -53,3 +53,23 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop
+    properties:
+
+      # Hibernate batch size 설정
+      hibernate:
+        jdbc:
+          batch_size: 10000
+        order_inserts: true
+        order_updates: true
+        cache:
+
+          # 인덱스 테스트를 위해 캐시를 사용하지 않음
+          # Hibernate의 쿼리 캐시를 비활성화
+          # 쿼리 캐시는 동일한 JPQL/SQL 쿼리에 대해 결과를 캐싱하여, 이후 동일 쿼리 실행 시 데이터베이스에 재요청하지 않고 캐시된 결과를 제공함으로써 성능을 향상시킵니다.
+          # 하지만 쿼리 캐시가 활성화되면 실제 데이터베이스로부터 실행 계획이 제대로 측정되지 않을 수 있고, 인덱스의 영향을 분석하는 데 왜곡이 발생할 위험이 있습니다. 따라서 정확한 테스트를 위해 반드시 비활성화해야 합니다.
+          use_query_cache: false
+
+          # Hibernate의 2차 캐시를 비활성화
+          # 2차 캐시는 애플리케이션의 여러 세션 간에 엔티티 데이터를 공유하여, 데이터베이스 접근을 줄이고 성능을 개선할 수 있는 메커니즘입니다.
+          # 하지만 테스트나 데이터의 최신성 및 실행 계획(예: 인덱스 사용 여부) 검증 시에는 캐시된 데이터가 실제 쿼리 실행과 차이가 발생할 수 있으므로 비활성화하는 것이 필수입니다.
+          use_second_level_cache: false

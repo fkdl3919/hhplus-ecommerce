@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import jakarta.persistence.Version;
 import kr.hhplus.be.server.domain.common.Base;
 import kr.hhplus.be.server.domain.point.enums.PointTransactionType;
@@ -20,6 +22,9 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(indexes = {
+    @Index(name = "idx_user_id", columnList = "userId")
+})
 public class Point extends Base {
 
     @Id
