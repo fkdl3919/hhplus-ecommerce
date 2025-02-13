@@ -39,7 +39,7 @@ ordered_at <- 통계 같은걸 위해서 자주 조회될 것... 하면 됨. 오
    - 등치 조건은 인덱스의 왼쪽부터 순차적으로 매칭되며 효율적으로 필터링할 수 있다.
 3. 범위 조건(<, >, BETWEEN, LIKE 등)
    - 범위 조건도 인덱스 사용에 도움이 되나, 인덱스의 순서에 따라 이후 컬럼의 활용도가 제한될 수 있음.(범위 조건 인덱스 사용 후 그 뒤 컬럼은 적용 X)
-3. 인덱스 재정렬 최소화 - 데이터 삽입, 수정이 적은 컬럼 
+3. 인덱스 재정렬 최소화 - 데이터 삽입, 수정이 적은 컬럼
    - insert, update, delete같은 데이터 변경 쿼리가 잦은 경우 paging이 빈번해져 성능이 악화될 수 있다.
 4. Nullable 컬럼은 가급적 지양
    - null이 허용되나 null이 색인에 있어 비약적인 성능 저하를 가져오므로, 일반적으로 Nullable한 데이터의 경우 Indexing을 하지 않는다.
@@ -73,7 +73,7 @@ ordered_at <- 통계 같은걸 위해서 자주 조회될 것... 하면 됨. 오
    - ```sql
        select * from point where user_id = ?
       ```
-   - 기대효과: user_id로 조회 시 인덱스를 통해 빠른 조회가 가능해야 한다.
+   - 기대효과: user_id로 조회 시 인덱스를 통한 응답속도 향상
    - 결과
       - 인덱스 미사용 시: 112 milliseconds
       - 인덱스 사용 시: 60 milliseconds
@@ -83,9 +83,15 @@ ordered_at <- 통계 같은걸 위해서 자주 조회될 것... 하면 됨. 오
    - 테스트 데이터 수: Order 30만건, OrderItem 30만건
    - 테스트 쿼리
    - ```sql
-       select * from point where user_id = ?
+       SELECT p.*
+            FROM product p
+            JOIN order_item oi ON oi.product_id = p.id
+            JOIN order_t o ON oi.order_id = o.id  AND o.status = 'CONFIRMED'
+        WHERE o.ordered_at > NOW() - INTERVAL 3 DAY
+        ORDER BY oi.quantity DESC
+        LIMIT 5
       ```
-   - 기대효과: user_id로 조회 시 인덱스를 통해 빠른 조회가 가능해야 한다.
-   - 결과
-      - 인덱스 미사용 시: 112 milliseconds
-      - 인덱스 사용 시: 60 milliseconds
+      - 기대효과: idx_order_id_product_id_quantity 와 idx_status_ordered_at 인덱스를 통한 응답속도 향상
+      - 결과
+         - 인덱스 미사용 시: 112 milliseconds
+         - 인덱스 사용 시: 60 milliseconds
