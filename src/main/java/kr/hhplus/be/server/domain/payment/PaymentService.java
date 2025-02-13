@@ -5,6 +5,8 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.payment.command.PaymentCommand;
 import kr.hhplus.be.server.domain.payment.enums.PaymentStatus;
 import kr.hhplus.be.server.domain.user.User;
+import kr.hhplus.be.server.interfaces.event.payment.PaymentEventPublisher;
+import kr.hhplus.be.server.interfaces.event.payment.PaymentSuccessEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
+    private final PaymentEventPublisher eventPublisher;
 
 
     @Transactional
@@ -28,6 +31,8 @@ public class PaymentService {
         // 결제 성공
         payment.setStatus(PaymentStatus.CONFIRMED);
         payment.setPaidAt(LocalDateTime.now());
+
+        eventPublisher.success(new PaymentSuccessEvent(payment.getOrder().getId(), payment.getId()));
 
         return paymentRepository.save(payment);
     }
