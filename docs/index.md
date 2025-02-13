@@ -73,7 +73,7 @@ ordered_at <- 통계 같은걸 위해서 자주 조회될 것... 하면 됨. 오
    - ```sql
        select * from point where user_id = ?
       ```
-   - 기대효과: user_id로 조회 시 인덱스를 통해 빠른 조회가 가능해야 한다.
+   - 기대효과: user_id로 조회 시 인덱스를 통한 응답속도 향상
    - 결과
       - 인덱스 미사용 시: 112 milliseconds
       - 인덱스 사용 시: 60 milliseconds
@@ -83,9 +83,15 @@ ordered_at <- 통계 같은걸 위해서 자주 조회될 것... 하면 됨. 오
    - 테스트 데이터 수: Order 30만건, OrderItem 30만건
    - 테스트 쿼리
    - ```sql
-       select * from point where user_id = ?
+       SELECT p.*
+            FROM product p
+            JOIN order_item oi ON oi.product_id = p.id
+            JOIN order_t o ON oi.order_id = o.id  AND o.status = 'CONFIRMED'
+        WHERE o.ordered_at > NOW() - INTERVAL 3 DAY
+        ORDER BY oi.quantity DESC
+        LIMIT 5
       ```
-   - 기대효과: user_id로 조회 시 인덱스를 통해 빠른 조회가 가능해야 한다.
-   - 결과
-      - 인덱스 미사용 시: 112 milliseconds
-      - 인덱스 사용 시: 60 milliseconds
+     - 기대효과: idx_order_id_product_id_quantity 와 idx_status_ordered_at 인덱스를 통한 응답속도 향상
+     - 결과
+        - 인덱스 미사용 시: 112 milliseconds
+        - 인덱스 사용 시: 60 milliseconds
