@@ -49,7 +49,7 @@ public class RedisConfig {
     public CacheManager cacheManagera(RedisConnectionFactory redissonConnectionFactory) {
         RedisCacheConfiguration cacheConfig = RedisCacheConfiguration.defaultCacheConfig()
             // 캐시 만료 시간을 60초로 설정
-            .entryTtl(Duration.ofSeconds(100))
+            .entryTtl(Duration.ofSeconds(60))
             .disableCachingNullValues()
             // Key와 Value의 직렬화 설정
             .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
