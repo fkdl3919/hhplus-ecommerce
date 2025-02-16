@@ -88,10 +88,17 @@ ordered_at <- 통계 같은걸 위해서 자주 조회될 것... 하면 됨. 오
             JOIN order_item oi ON oi.product_id = p.id
             JOIN order_t o ON oi.order_id = o.id  AND o.status = 'CONFIRMED'
         WHERE o.ordered_at > NOW() - INTERVAL 3 DAY
-        ORDER BY oi.quantity DESC
+        GROUP BY p.id
+        ORDER BY sum(oi.quantity) DESC
         LIMIT 5
       ```
-      - 기대효과: idx_order_id_product_id_quantity 와 idx_status_ordered_at 인덱스를 통한 응답속도 향상
-      - 결과
-         - 인덱스 미사용 시: 112 milliseconds
-         - 인덱스 사용 시: 60 milliseconds
+     - 기대효과: idx_order_id_product_id_quantity 와 idx_status_ordered_at 인덱스를 통한 응답속도 향상
+     - 결과
+        - 인덱스 미사용 시: 6000 milliseconds
+        - 인덱스 사용 시: 58500 milliseconds
+        - 인덱스 사용 후 오히려 성능이 저하되는 현상이 있었다.
+        - 이유: order의 status 분포도가 넓어 idx_status_ordered_at 사용 시 range type으로 사용이 되어 성능이 저하되었다.
+   - 개선방안: idx_status_ordered_at 를 삭제하고 OrderItem(product_id, quantity) 만 사용하여 인덱스를 적용하였다.
+     - 결과
+       - 인덱스 미 사용시: 6000 milliseconds
+       - 인덱스 사용 시: 1931 milliseconds

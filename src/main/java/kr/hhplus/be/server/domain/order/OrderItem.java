@@ -25,7 +25,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @Table(indexes = {
-    @Index(name = "idx_order_id_product_id_quantity", columnList = "order_id, product_id, quantity")
+    @Index(name = "idx_product_id_quantity", columnList = "product_id, quantity")
 })
 public class OrderItem extends Base {
 

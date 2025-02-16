@@ -33,9 +33,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 @Table(name = "order_t"
-    , indexes = {
-    @Index(name = "idx_status_ordered_at", columnList = "status, orderedAt")
-}
+//    , indexes = {
+//    @Index(name = "idx_status_ordered_at", columnList = "status, orderedAt")
+//}
 )
 public class Order extends Base {
 
