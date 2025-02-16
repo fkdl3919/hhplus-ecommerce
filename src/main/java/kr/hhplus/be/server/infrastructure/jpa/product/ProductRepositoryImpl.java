@@ -73,9 +73,10 @@ public class ProductRepositoryImpl implements ProductRepository {
                 // 최근 3일 전부터
                 QOrder.order.orderedAt.gt(LocalDateTime.now().minus(3, ChronoUnit.DAYS))
             )
+            .groupBy(product.id)
             .orderBy(
                 // 상품 별 수량 오름차순
-                QOrderItem.orderItem.quantity.desc()
+                QOrderItem.orderItem.quantity.sum().desc()
             )
             .limit(5)
             .fetch();
