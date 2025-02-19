@@ -55,7 +55,8 @@ dependencies {
 	implementation("org.springframework.security:spring-security-test")
 	testCompileOnly ("org.projectlombok:lombok")
 	testAnnotationProcessor("org.projectlombok:lombok")
-
+	testImplementation("org.springframework.kafka:spring-kafka-test")
+	testImplementation("org.testcontainers:kafka")
 
 	// api docs
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
@@ -65,6 +66,10 @@ dependencies {
 	annotationProcessor ("com.querydsl:querydsl-apt:5.0.0:jakarta")
 	annotationProcessor ("jakarta.annotation:jakarta.annotation-api")
 	annotationProcessor ("jakarta.persistence:jakarta.persistence-api")
+
+	// kafka
+	implementation("org.springframework.kafka:spring-kafka")
+
 
 }
 

@@ -1,15 +1,10 @@
 package kr.hhplus.be.server;
 
 import jakarta.annotation.PreDestroy;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.cache.CacheProperties.Redis;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.KafkaContainer;
 import org.testcontainers.utility.DockerImageName;
 
 @Configuration
@@ -20,6 +15,8 @@ class TestcontainersConfiguration {
 	private static final String REDIS_IMAGE = "redis:latest";
 	private static final int REDIS_PORT = 6379;
 	private static final GenericContainer REDIS_CONTAINER;
+
+	private static final KafkaContainer KAFKA_CONTAINER;
 
 	static {
 		/**
@@ -46,6 +43,15 @@ class TestcontainersConfiguration {
 		System.setProperty("spring.data.redis.host", REDIS_CONTAINER.getHost());
 		System.setProperty("spring.data.redis.port", REDIS_CONTAINER.getMappedPort(REDIS_PORT).toString());
 
+		/**
+		 * kafka
+		 */
+		KAFKA_CONTAINER = new KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:6.2.1"))
+			.withReuse(true);
+		KAFKA_CONTAINER.start();
+
+		System.setProperty("spring.kafka.bootstrap-servers", KAFKA_CONTAINER.getBootstrapServers());
+
 	}
 
 	@PreDestroy
@@ -55,6 +61,10 @@ class TestcontainersConfiguration {
 		}
 		if (REDIS_CONTAINER.isRunning()) {
 			REDIS_CONTAINER.stop();
+		}
+
+		if (KAFKA_CONTAINER.isRunning()) {
+			KAFKA_CONTAINER.stop();
 		}
 	}
 /*
