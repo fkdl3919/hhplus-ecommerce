@@ -4,12 +4,15 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import kr.hhplus.be.server.domain.coupon.enums.CouponStatus;
+import kr.hhplus.be.server.domain.coupon.event.CouponEvent.UsedCoupon;
 import kr.hhplus.be.server.domain.coupon.info.IssuedCouponInfo;
+import kr.hhplus.be.server.domain.order.event.OrderEvent;
 import kr.hhplus.be.server.domain.user.User;
 import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.infrastructure.redis.DistributeLock;
 import kr.hhplus.be.server.infrastructure.redis.RedisRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,8 @@ public class CouponService {
     private final CouponRepository couponRepository;
     private final UserRepository userRepository;
     private final RedisRepository redisRepository;
+    private final ApplicationEventPublisher applicationEventPublisher;
+
 
     // LOCK:issueCoupon
     @DistributeLock(key = "issueCoupon")
@@ -88,9 +93,19 @@ public class CouponService {
         return issuedCoupon != null ? issuedCoupon.getCoupon() : new Coupon();
     }
 
-    public void useCoupon(Long issuedCouponId) {
-        if(issuedCouponId == null) return;
-        IssuedCoupon issuedCoupon = couponRepository.findIssuedCouponById(issuedCouponId).orElseThrow(() -> new EntityNotFoundException("보유쿠폰이 존재하지 않습니다."));
-        issuedCoupon.use();
+    public void useCoupon(OrderEvent.OrderRequest event) {
+        Long issuedCouponId = event.command().issuedCouponId();
+        IssuedCoupon issuedCoupon = null;
+        if(issuedCouponId != null){
+            issuedCoupon = couponRepository.findIssuedCouponById(issuedCouponId).orElseThrow(() -> new EntityNotFoundException("보유쿠폰이 존재하지 않습니다."));
+            issuedCoupon.use();
+        }
+
+        applicationEventPublisher.publishEvent(
+            UsedCoupon.builder()
+                .orderId(event.orderId())
+                .discountRate(issuedCoupon != null ? issuedCoupon.getCoupon().getDiscountRate() : 0)
+                .userId(event.userId()).command(event.command()).build()
+        );
     }
 }
