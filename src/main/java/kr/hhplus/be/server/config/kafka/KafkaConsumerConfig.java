@@ -23,8 +23,6 @@ public class KafkaConsumerConfig {
         Map<String, Object> props = new HashMap<>();
         // Kafka 브로커 주소
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        // 그룹 아이디 설정
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "payment.group");
         // 키와 값 역직렬화 설정
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
