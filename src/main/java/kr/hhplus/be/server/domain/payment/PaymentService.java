@@ -5,9 +5,9 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.payment.command.PaymentCommand;
 import kr.hhplus.be.server.domain.payment.enums.PaymentStatus;
 import kr.hhplus.be.server.domain.user.User;
-import kr.hhplus.be.server.interfaces.event.payment.PaymentEventPublisher;
-import kr.hhplus.be.server.interfaces.event.payment.PaymentSuccessEvent;
+import kr.hhplus.be.server.domain.payment.event.PaymentSuccessEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final PaymentEventPublisher eventPublisher;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
 
     @Transactional
@@ -32,7 +32,7 @@ public class PaymentService {
         payment.setStatus(PaymentStatus.CONFIRMED);
         payment.setPaidAt(LocalDateTime.now());
 
-        eventPublisher.success(new PaymentSuccessEvent(payment.getOrder().getId(), payment.getId()));
+        applicationEventPublisher.publishEvent(new PaymentSuccessEvent(payment.getOrder().getId(), payment.getId(), payment.getUser().getId(), payment.getPayPrice()));
 
         return paymentRepository.save(payment);
     }

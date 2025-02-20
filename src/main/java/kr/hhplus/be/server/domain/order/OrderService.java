@@ -5,7 +5,12 @@ import java.util.List;
 import kr.hhplus.be.server.domain.order.command.OrderCommand;
 import kr.hhplus.be.server.domain.order.command.OrderCommand.Order.OrderItemCommand;
 import kr.hhplus.be.server.domain.order.enums.OrderStatus;
+import kr.hhplus.be.server.domain.order.enums.OutboxOrderStatus;
+import kr.hhplus.be.server.domain.order.event.OrderEvent.OrderRequest;
+import kr.hhplus.be.server.infrastructure.kafka.order.OrderProducer;
+import kr.hhplus.be.server.domain.order.event.OrderEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     // 주문 생성
     @Transactional
@@ -45,7 +50,23 @@ public class OrderService {
             orderRepository.saveOrderItem(build);
         });
 
+        // 주문 이벤트 발생
+        OrderEvent.OrderRequest orderRequest = OrderRequest.builder()
+            .orderId(order.getId())
+            .userId(order.getUserId())
+            .command(command)
+            .build();
+
+        applicationEventPublisher.publishEvent(orderRequest);
+
         return order;
+    }
+
+    @Transactional
+    public void confirmOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
+        order.setStatus(OrderStatus.CONFIRMED);
+        orderRepository.save(order);
     }
 
 }

@@ -35,7 +35,13 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonSerializer
     topic:
-      payment-success: payment.success
+      order:
+        request: order.request
+        success: order.success
+      coupon:
+        used: coupon.use
+      payment:
+        success: payment.success
 
 
 #redis:
