@@ -1,5 +1,6 @@
 spring:
   application:
+    port: 8080
     name: hhplus
   profiles:
     active: local
@@ -60,7 +61,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
 ---
 spring.config.activate.on-profile: test
 
