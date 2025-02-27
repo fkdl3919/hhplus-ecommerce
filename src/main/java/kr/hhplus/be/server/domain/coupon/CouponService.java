@@ -12,6 +12,7 @@ import kr.hhplus.be.server.domain.user.UserRepository;
 import kr.hhplus.be.server.infrastructure.redis.DistributeLock;
 import kr.hhplus.be.server.infrastructure.redis.RedisRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CouponService {
 
     private final CouponRepository couponRepository;
@@ -64,6 +66,8 @@ public class CouponService {
     public void requestCoupon(long couponId, long userId) {
         final String COUPON_PREFIX = "coupon:";
         final String ISSUED_COUPON_PREFIX = "issuedCoupon:";
+
+        log.info("requestCoupon couponId: {}, userId: {}", couponId, userId);
 
         redisRepository.getSetValue(ISSUED_COUPON_PREFIX + couponId, String.valueOf(userId)).ifPresent(s -> {
             throw new IllegalArgumentException("이미 발급된 쿠폰입니다.");
