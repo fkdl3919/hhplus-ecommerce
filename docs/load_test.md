@@ -140,7 +140,7 @@ if (scenarioToRun === 'coupon_spike' || scenarioToRun === 'all') {
 
 ```
 
-![](./assets/Screenshot 2025-02-28 at 01.49.25.png)
+![](https://github.com/fkdl3919/hhplus-ecommerce/blob/main/docs/assets/Screenshot%202025-02-28%20at%2001.49.25.png)
 
 - 분석결과
     - 초당 10000건의 피크 요청을 테스트 할 때 요청 처리율, 실패율, 응답시간 면에서 상당한 성능 문제가 보인다.
@@ -198,9 +198,9 @@ vus_max........................: 17603 min=50 max=17603
 
 - grafana 모니터링 자료
 
-![](./assets/Screenshot 2025-02-28 at 02.06.41.png)
+![](https://github.com/fkdl3919/hhplus-ecommerce/blob/main/docs/assets/Screenshot%202025-02-28%20at%2002.06.41.png)
 
-![](./assets/Screenshot 2025-02-28 at 02.06.55.png)
+![](https://github.com/fkdl3919/hhplus-ecommerce/blob/main/docs/assets/Screenshot%202025-02-28%20at%2002.06.55.png)
 
 두번째 테스트 B
 ```javascript
@@ -226,7 +226,7 @@ if (scenarioToRun === 'coupon_spike' || scenarioToRun === 'all') {
 
 ```
 
-![](./assets/Screenshot 2025-02-28 at 02.16.47.png)
+![](https://github.com/fkdl3919/hhplus-ecommerce/blob/main/docs/assets/Screenshot%202025-02-28%20at%2002.16.47.png)
 
 ### 테스트 A와 테스트B의 결과 보고서
 
