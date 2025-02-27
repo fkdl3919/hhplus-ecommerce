@@ -14,8 +14,7 @@ import kr.hhplus.be.server.domain.point.PointService;
 import kr.hhplus.be.server.domain.point.command.PointCommand;
 import kr.hhplus.be.server.domain.product.ProductService;
 import kr.hhplus.be.server.domain.product.command.ProductCommand;
-import kr.hhplus.be.server.domain.product.command.ProductCommand.Get;
-import kr.hhplus.be.server.domain.user.UserService;
+import kr.hhplus.be.server.infrastructure.kafka.order.OrderProducer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,11 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderFacade {
 
     private final OrderService orderService;
-    private final PaymentService paymentService;
-    private final UserService userService;
-    private final PointService pointService;
     private final ProductService productService;
-    private final CouponService couponService;
 
     @Transactional
     public OrderInfo orderPayment(OrderCommand.Order command) {
@@ -38,18 +33,7 @@ public class OrderFacade {
         );
         command.validateAmount(amountOfProducts);
         Order order = orderService.order(command);
-        Coupon coupon = couponService.getCoupon(command.issuedCouponId());
-        Payment payment = paymentService.pay(
-            PaymentCommand.Pay.builder().userId(command.userId()).orderId(order.getId()).orderPrice(command.orderPrice()).discountRate(coupon.getDiscountRate()).build()
-        );
-        pointService.use(PointCommand.Use.builder().userId(command.userId()).point(payment.getPayPrice()).build());
-        couponService.useCoupon(command.issuedCouponId());
-        productService.deduct(
-            command.products().stream().map((orderItemCommand) -> ProductCommand.Deduct.builder().productId(orderItemCommand.productId()).quantity(orderItemCommand.quantity()).build()).collect(Collectors.toList())
-        );
-        order.confirmOrder();
         return OrderInfo.of(order);
-
     }
 
 }
