@@ -15,7 +15,7 @@ public class UserService {
 
     @Transactional
     public UserInfo findUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다."));
+        User user = userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("유저가 존재하지 않습니다." + id));
         return UserInfo.of(user);
     }
 

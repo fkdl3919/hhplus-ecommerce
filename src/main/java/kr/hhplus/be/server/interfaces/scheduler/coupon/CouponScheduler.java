@@ -31,7 +31,7 @@ public class CouponScheduler {
      * 분산락을 사용하여 스케줄러 중복 실행 방지
      * @throws InterruptedException
      */
-    @Scheduled(fixedRate = 1000 * 60)
+//    @Scheduled(fixedRate = 1000)
     public void excute() throws InterruptedException {
         String LOCK_KEY = REDISSON_LOCK_PREFIX + "couponScheduler";
         RLock rLock = redissonClient.getLock(LOCK_KEY);
