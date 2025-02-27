@@ -20,6 +20,49 @@ services:
     volumes:
       - ./data/redis:/data
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    hostname: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - '9094:9094'
+    environment:
+      KAFKA_BROKER_ID: 1
+      ALLOW_PLAINTEXT_LISTENER: yes
+      KAFKA_ENABLE_KRAFT: no
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://:9092,INTERNAL://:9094
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,INTERNAL://kafka:9094
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8009:8080"
+    environment:
+      # Kafka 클러스터 이름 (임의로 local로 지정)
+      KAFKA_CLUSTERS_0_NAME: local
+
+      # Kafka 브로커의 주소 (docker 내부 네트워크 기준)
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9094
+
+      KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+
 networks:
   default:
     driver: bridge
